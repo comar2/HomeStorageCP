@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">HomeStrorageCp</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="menu_main_users">users</string>
+
+
+    <!-- Picasso Strings -->
+    <string name="disk_cache_description">On Ice Cream Sandwich and above, a disk cache is
+        automatically used so that subsequent requests for the same URL do not re-download the
+        image.\n\nTo enable this functionality on pre-ICS use a standalone HTTP client with caching such
+        as OkHttp.
+      </string>
+
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>
