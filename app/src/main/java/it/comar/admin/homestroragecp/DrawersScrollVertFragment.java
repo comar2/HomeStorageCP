@@ -14,6 +14,7 @@ import android.widget.TextView;
 //import android.app.Fragment;
 //import android.app.FragmentManager;
 
+
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -21,6 +22,7 @@ import android.support.v4.view.ViewPager;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import fr.castorflex.android.verticalviewpager.VerticalViewPager;
 
@@ -75,41 +77,54 @@ public class DrawersScrollVertFragment extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
+        ArrayList<String> listaCassetti;
+        listaCassetti = ConfigArmadio.getDrawersNamesList();
+        Random rand = new Random();
+
         // BEGIN_INCLUDE (populate_tabs)
         /**
          * Populate our tab list with tabs. Each item contains a title, indicator color and divider
          * color, which are used by {@link SlidingTabLayout}.
          */
-        mTabs.add(new SamplePagerItem(
-                "PAG 1",//getString(R.string.tab_stream), // Title
-                Color.BLUE, // Indicator color
-                Color.GRAY // Divider color
-        ));
+        int index = 1;
+        for(String itm : listaCassetti){
+            mTabs.add(new SamplePagerItem(itm,
+                    Color.rgb(rand.nextInt(200)+55,rand.nextInt(200)+55,rand.nextInt(255)),
+                    Color.rgb(rand.nextInt(200)+55,rand.nextInt(255),rand.nextInt(255)),
+                    index));
+            index++;
+        }
 
-        mTabs.add(new SamplePagerItem(
-                "PAG 2",//getString(R.string.tab_messages), // Title
-                Color.RED, // Indicator color
-                Color.GRAY // Divider color
-        ));
-
-        mTabs.add(new SamplePagerItem(
-                "PAG 3",//getString(R.string.tab_photos), // Title
-                Color.YELLOW, // Indicator color
-                Color.GRAY // Divider color
-        ));
-
-        mTabs.add(new SamplePagerItem(
-                "PAG 4",//getString(R.string.tab_notifications), // Title
-                Color.GREEN, // Indicator color
-                Color.GRAY // Divider color
-        ));
-
-        mTabs.add(new SamplePagerItem(
-                "PAG 5",//getString(R.string.tab_notifications), // Title
-                Color.LTGRAY, // Indicator color
-                Color.BLUE // Divider color
-        ));
-        // END_INCLUDE (populate_tabs)
+//        mTabs.add(new SamplePagerItem(
+//                "PAG 1",//getString(R.string.tab_stream), // Title
+//                Color.BLUE, // Indicator color
+//                Color.GRAY // Divider color
+//        ));
+//
+//        mTabs.add(new SamplePagerItem(
+//                "PAG 2",//getString(R.string.tab_messages), // Title
+//                Color.RED, // Indicator color
+//                Color.GRAY // Divider color
+//        ));
+//
+//        mTabs.add(new SamplePagerItem(
+//                "PAG 3",//getString(R.string.tab_photos), // Title
+//                Color.YELLOW, // Indicator color
+//                Color.GRAY // Divider color
+//        ));
+//
+//        mTabs.add(new SamplePagerItem(
+//                "PAG 4",//getString(R.string.tab_notifications), // Title
+//                Color.GREEN, // Indicator color
+//                Color.GRAY // Divider color
+//        ));
+//
+//        mTabs.add(new SamplePagerItem(
+//                "PAG 5",//getString(R.string.tab_notifications), // Title
+//                Color.LTGRAY, // Indicator color
+//                Color.BLUE // Divider color
+//        ));
+//        // END_INCLUDE (populate_tabs)
 
     }
 
@@ -189,18 +204,20 @@ public class DrawersScrollVertFragment extends Fragment {
         private final CharSequence mTitle;
         private final int mIndicatorColor;
         private final int mDividerColor;
+        private final int mPos;
 
-        SamplePagerItem(CharSequence title, int indicatorColor, int dividerColor) {
+        SamplePagerItem(CharSequence title, int indicatorColor, int dividerColor, int pos) {
             mTitle = title;
             mIndicatorColor = indicatorColor;
             mDividerColor = dividerColor;
+            mPos = pos;
         }
 
         /**
          * @return A new {@link Fragment} to be displayed by a {@link ViewPager}
          */
         Fragment createFragment() {
-            return ContentFragment.newInstance(mTitle, mIndicatorColor, mDividerColor);
+            return Drawer_ContentFragment.newInstance(mTitle, mIndicatorColor, mDividerColor, mPos);
         }
 
         /**
@@ -230,33 +247,76 @@ public class DrawersScrollVertFragment extends Fragment {
      * Simple Fragment used to display some meaningful content for each page in the sample's
      * {@link android.support.v4.view.ViewPager}.
      */
-    public static class ContentFragment extends Fragment {
+    public static class Drawer_ContentFragment extends Fragment {
 
         private static final String KEY_TITLE = "title";
         private static final String KEY_INDICATOR_COLOR = "indicator_color";
         private static final String KEY_DIVIDER_COLOR = "divider_color";
+        private static final String KEY_POS = "drawer_position";
 
         /**
-         * @return a new instance of {@link ContentFragment}, adding the parameters into a bundle and
+         * @return a new instance of {@link Drawer_ContentFragment}, adding the parameters into a bundle and
          * setting them as arguments.
          */
-        public static ContentFragment newInstance(CharSequence title, int indicatorColor,
-                                                  int dividerColor) {
+//        public static Drawer_ContentFragment newInstance(CharSequence title, int indicatorColor,
+//                                                  int dividerColor) {
+//            Bundle bundle = new Bundle();
+//            bundle.putCharSequence(KEY_TITLE, title);
+//            bundle.putInt(KEY_INDICATOR_COLOR, indicatorColor);
+//            bundle.putInt(KEY_DIVIDER_COLOR, dividerColor);
+//
+//            Drawer_ContentFragment fragment = new Drawer_ContentFragment();
+//            fragment.setArguments(bundle);
+//
+//            return fragment;
+//        }
+
+        public static Drawer_ContentFragment newInstance(CharSequence title, int indicatorColor,
+                                                  int dividerColor, int pos) {
             Bundle bundle = new Bundle();
             bundle.putCharSequence(KEY_TITLE, title);
             bundle.putInt(KEY_INDICATOR_COLOR, indicatorColor);
             bundle.putInt(KEY_DIVIDER_COLOR, dividerColor);
+            bundle.putInt(KEY_POS, pos);
 
-            ContentFragment fragment = new ContentFragment();
+            Drawer_ContentFragment fragment = new Drawer_ContentFragment();
             fragment.setArguments(bundle);
 
             return fragment;
         }
 
         @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+
+        }
+
+        @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
-            return inflater.inflate(R.layout.pager_item, container, false);
+            int drawerPos = 0;
+            Bundle args = getArguments();
+            if (args != null) {
+                if (args.containsKey(KEY_POS)){
+                    drawerPos = args.getInt(KEY_POS);
+                }
+                else {
+                    drawerPos = 2;
+                }
+
+            }
+
+            // Inflate the layout for this fragment
+            View view =  inflater.inflate(R.layout.drawer_content_page, container, false);
+            ListView drawerItems = (ListView) view.findViewById(R.id.listView1);
+            //ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, CassettiUrl.getCassettoUrl(drawerPos,this.getActivity()));
+            //DrawersListAdapter ladapt = new DrawersListAdapter(getActivity());
+            DrawerItemsAdapter ladapt = new DrawerItemsAdapter(getActivity(),drawerPos);
+
+            drawerItems.setAdapter(ladapt);
+
+
+            return view;
         }
 
         @Override
@@ -289,7 +349,7 @@ public class DrawersScrollVertFragment extends Fragment {
 
     /**
      * The {@link FragmentPagerAdapter} used to display pages in this sample. The individual pages
-     * are instances of {@link ContentFragment} which just display three lines of text. Each page is
+     * are instances of {@link Drawer_ContentFragment} which just display three lines of text. Each page is
      * created by the relevant {@link SamplePagerItem} for the requested position.
      * <p>
      * The important section of this class is the {@link #getPageTitle(int)} method which controls

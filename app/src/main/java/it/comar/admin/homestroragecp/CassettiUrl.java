@@ -239,9 +239,11 @@ final class CassettiUrl {
         String stmp;
         List<String> pathList = new ArrayList<String>();
         File[] files;
+        String cassetto = "c"+String.format("%02d", cass);
         dataDir = new String(fdd.getAbsolutePath());
         extDir  = new String(fesd.getAbsolutePath());
-        fesd = new File(dataDir+File.separator+"cassetti"+File.separator+"c01");
+        //fesd = new File(dataDir+File.separator+"cassetti"+File.separator+"c01");
+        fesd = new File(dataDir+File.separator+"cassetti"+File.separator+cassetto);
         ret = fesd.mkdirs();
         ret = fesd.isFile();
         ret = fesd.isDirectory();
@@ -322,6 +324,80 @@ final class CassettiUrl {
         urls = pathList.toArray(urls);
         Collections.addAll(urlsList,urls);
         return  urlsList;
+    }
+
+    public static ArrayList<String> getCassettoUrl3(int cass, Context appcontext){
+        context = appcontext.getApplicationContext();
+
+        //ArrayList<String>  urlsList = new ArrayList<String>();
+
+        //File fdd = Environment.getDataDirectory();// .getActivity().getApplicationContext().getExternalFilesDir("cassetti");
+        File fdd =  context.getFilesDir();
+        //File fesd = Environment.getExternalStorageDirectory(); //this.getActivity().getApplicationContext().getExternalFilesDir("cassetti");
+        File fesd = context.getExternalFilesDir("cassetti");
+
+        boolean ret;
+        String dataDir;
+        String extDir;
+        String stmp;
+        ArrayList<String> pathList = new ArrayList<String>();
+        File[] files;
+        String cassetto = "c"+String.format("%02d", cass);
+        dataDir = new String(fdd.getAbsolutePath());
+        extDir  = new String(fesd.getAbsolutePath());
+        //fesd = new File(dataDir+File.separator+"cassetti"+File.separator+"c01");
+        //fesd = new File(extDir+File.separator+"cassetti"+File.separator+cassetto);
+
+        fesd = new File(extDir+File.separator+cassetto);
+        ret = fesd.mkdirs();
+        ret = fesd.isFile();
+        ret = fesd.isDirectory();
+        ret = fesd.exists();
+        ret = fesd.isHidden();
+        ret = fesd.canRead();
+        ret = fesd.canWrite();
+        ret = fesd.setReadable(true, false);
+        ret = fesd.setWritable(true,false);
+        //ret = fesd.delete();
+        if (!fesd.isDirectory())
+        {
+            fesd.mkdirs();
+        }
+        else {
+            files = fesd.listFiles();
+            if (files != null) {
+                for (File file : files) {
+                    stmp = file.getAbsolutePath();
+                    pathList.add("file://"+file.getAbsolutePath());
+                }
+            }
+        }
+
+        return  pathList;
+
+//        stmp = new String(extDir+File.separator+cassetto);
+//        fesd  = new File(stmp);
+//
+//        String[] urls = new String[]{"cc", "dd"};
+//        ArrayList<String>  urlsList = new ArrayList<String>();
+//
+//        if (fesd.isDirectory())
+//        {
+//            urls = fesd.list();
+//            files = fesd.listFiles();
+//            if (files != null) {
+//                for (File file : files) {
+//                    stmp = file.getAbsolutePath();
+//                    pathList.add("file://"+file.getAbsolutePath());
+//                }
+//            }
+//        }
+//        urls = pathList.toArray(urls);
+//        Collections.addAll(urlsList,urls);
+//        return  urlsList;
+
+
+
     }
 
     private CassettiUrl() {

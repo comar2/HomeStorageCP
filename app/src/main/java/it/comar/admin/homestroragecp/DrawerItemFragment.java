@@ -82,10 +82,8 @@ public class DrawerItemFragment extends Fragment {
 //        final MainActivityFragmentAdapter adapter = new MainActivityFragmentAdapter(this.getActivity());
         ListView listView = (ListView) view.findViewById(R.id.listView);
 
- //       ListView listView = (ListView) LayoutInflater.from(this.getActivity())
- //              .inflate(R.layout.sample_list_detail_list, container, false);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
-                android.R.layout.simple_list_item_1, CassettiUrl.getCassettoUrl(2,this.getActivity()));
+//        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
+  //              android.R.layout.simple_list_item_1, CassettiUrl.getCassettoUrl(2,this.getActivity()));
         DrawersListAdapter ladapt = new DrawersListAdapter(getActivity());
 
         listView.setAdapter(ladapt);

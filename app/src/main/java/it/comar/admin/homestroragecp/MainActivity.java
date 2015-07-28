@@ -97,14 +97,14 @@ public class MainActivity extends FragmentActivity
 //                    .commit();
             //fragmentTransaction.add(R.id.fragmentLeft, MainActivityFragmentLeft.newInstance("frammento left"));
             // Create an instance of ExampleFragment
-            fragmentTransaction.add(R.id.fragmentLeft, DrawerItemFragment.newInstance("aa", "bbbb"));
+            fragmentTransaction.add(R.id.fragmentLeft, DrawerItemFragment.newInstance("DrawerItemFragment", "bbbb"));
             fragmentTransaction.commit();
 
             fragmentTransaction = fragmentManager.beginTransaction();
             //fragmentTransaction.add(R.id.fragmentRight, MainActivityFragmentRight_ListItems.newInstance());
             //fragmentTransaction.add(R.id.fragmentRight, MainActivityFragmentRight.newInstance("aaa","bbbb"));
 
-            fragmentTransaction.add(R.id.fragmentRight, DrawersScrollVertFragment.newInstance("aa","bb"));
+            fragmentTransaction.add(R.id.fragmentRight, DrawersScrollVertFragment.newInstance("DrawersScrollVertFragment","bb"));
             fragmentTransaction.commit();
 
 

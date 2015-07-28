@@ -4,7 +4,14 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:orientation="vertical"
-              android:gravity="center">
+              android:gravity="center"
+    android:weightSum="1">
+
+    <ListView
+        android:layout_width="wrap_content"
+        android:layout_height="341dp"
+        android:id="@+id/listView1"
+        android:layout_weight="0.7" />
 
     <TextView
           android:id="@+id/item_title"
