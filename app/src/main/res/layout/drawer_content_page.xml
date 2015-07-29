@@ -3,32 +3,49 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:orientation="vertical"
-              android:gravity="center"
+              android:orientation="horizontal"
     android:weightSum="1">
 
-    <ListView
-        android:layout_width="wrap_content"
-        android:layout_height="341dp"
-        android:id="@+id/listView1"
-        android:layout_weight="0.7" />
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="0.9">
 
-    <TextView
-          android:id="@+id/item_title"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:textAppearance="?android:attr/textAppearanceLarge" />
+        <ListView
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:id="@+id/listView1"
+            android:layout_weight="0.85"
+            android:layout_gravity="top" />
 
-    <TextView
-          android:id="@+id/item_indicator_color"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:textAppearance="?android:attr/textAppearanceLarge" />
+        <TextView
+            android:id="@+id/item_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
 
-    <TextView
-          android:id="@+id/item_divider_color"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:textAppearance="?android:attr/textAppearanceLarge" />
+        <TextView
+            android:id="@+id/item_indicator_color"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <TextView
+            android:id="@+id/item_divider_color"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+    </LinearLayout>
+
+    <SurfaceView
+        android:layout_width="0dp"
+        android:layout_height="fill_parent"
+        android:id="@+id/surfaceView"
+        android:layout_weight="0.1"
+        android:visibility="visible"
+        android:background="#ffff1700"
+        android:focusable="false" />
+
 
 </LinearLayout>
