@@ -1,12 +1,14 @@
 package it.comar.admin.homestroragecp;
 
 import android.app.ActionBar;
+import android.app.Activity;
 import android.app.Dialog;
 
 
 //import android.app.FragmentManager;
 //import android.app.FragmentTransaction;
 
+import android.content.Intent;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
@@ -135,6 +137,12 @@ public class MainActivity extends FragmentActivity
             Dialog menuuser = new Dialog(this);
             menuuser.setTitle("pippo");
             menuuser.show();
+            return true;
+        }
+
+        if (id == R.id.menu_main_man_mov) {
+            Intent intent = new Intent(this, Activity_ManualMov.class);
+            this.startActivity(intent);
             return true;
         }
 
