@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Random;
 
 import fr.castorflex.android.verticalviewpager.VerticalViewPager;
+import it.comar.admin.homestroragecp.database.DBManager;
 
 
 /**
@@ -78,7 +79,7 @@ public class DrawersScrollVertFragment extends Fragment {
         }
 
         ArrayList<String> listaCassetti;
-        listaCassetti = ConfigArmadio.getDrawersNamesList();
+        listaCassetti = ConfigArmadio.getDrawersNamesList(new DBManager(getActivity().getApplicationContext()));
         Random rand = new Random();
 
         // BEGIN_INCLUDE (populate_tabs)

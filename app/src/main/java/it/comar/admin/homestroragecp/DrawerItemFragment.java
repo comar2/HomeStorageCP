@@ -1,6 +1,8 @@
 package it.comar.admin.homestroragecp;
 
 import android.app.Activity;
+import android.content.Context;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -13,11 +15,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
-import com.google.android.gms.plus.PlusOneButton;
+import it.comar.admin.homestroragecp.database.DBManager;
 
 /**
- * A fragment with a Google +1 button.
+ * Un Fragment che contiene la lista dei cassetti della macchina
  * Activities that contain this fragment must implement the
  * {@link OnDrawerItemFragmentInteractionListener} interface
  * to handle interaction events.
@@ -25,21 +26,28 @@ import com.google.android.gms.plus.PlusOneButton;
  * create an instance of this fragment.
  */
 public class DrawerItemFragment extends Fragment {
+
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
     // TODO: Rename and change types of parameters
+    //Parametri che vengono ricevuti in ingresso con la funzione newInstance
     private String mParam1;
     private String mParam2;
 
+
+
+    private DBManager db=null;
 
     private OnDrawerItemFragmentInteractionListener mListener;
 
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
+     * Al momento i parametri non hanno alcun uso.
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
@@ -51,6 +59,7 @@ public class DrawerItemFragment extends Fragment {
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
+        //si salvano i parametri in modo che restino costanti anche se si riesegue oncreate o simili
         fragment.setArguments(args);
         return fragment;
     }
@@ -73,20 +82,13 @@ public class DrawerItemFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_drawer_item, container, false);
-//
-//        //Find the +1 button
-//        mPlusOneButton = (PlusOneButton) view.findViewById(R.id.plus_one_button);
-//
-//        return view;
 
-//        final MainActivityFragmentAdapter adapter = new MainActivityFragmentAdapter(this.getActivity());
         ListView listView = (ListView) view.findViewById(R.id.listView);
 
-//        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
-  //              android.R.layout.simple_list_item_1, CassettiUrl.getCassettoUrl(2,this.getActivity()));
         DrawersListAdapter ladapt = new DrawersListAdapter(getActivity());
 
         listView.setAdapter(ladapt);
+
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView parent, View view, int position, long id) {
 
@@ -101,14 +103,6 @@ public class DrawerItemFragment extends Fragment {
             }
         });
 
-//        listView.setOnScrollListener(new SampleScrollListener(activity));
-//        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-//                String url = adapter.getItem(position);
-//                activity.showDetails(url);
-//            }
-//        });
         return view;
     }
 
@@ -117,13 +111,6 @@ public class DrawerItemFragment extends Fragment {
         super.onResume();
 
     }
-
-//    // TODO: Rename method, update argument and hook method into UI event
-//    public void onButtonPressed(Uri uri) {
-//        if (mListener != null) {
-//            mListener.OnDrawerItemFragmentInteraction(uri);
-//        }
-//    }
 
     @Override
     public void onAttach(Activity activity) {

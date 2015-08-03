@@ -1,10 +1,15 @@
 package it.comar.admin.homestroragecp;
 
 import android.content.Context;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.DropBoxManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -12,12 +17,20 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
+import it.comar.admin.homestroragecp.database.DBManager;
+import it.comar.admin.homestroragecp.database.DBStrings;
+
 final class DrawerItemsAdapter extends BaseAdapter {
     private final Context context;
     private final ArrayList<String> urls;// = new ArrayList<String>();
 
+    private DBManager db=null;
+
     public DrawerItemsAdapter(Context context, int pos) {
         this.context = context;
+
+        db=new DBManager(context);
+
         //Collections.addAll(urls, Data.URLS);
         //Collections.addAll(urls,ConfigArmadio.getDrawersNamesList());
         //List<SomeBean> newList = new ArrayList<SomeBean>(otherList);
@@ -34,6 +47,7 @@ final class DrawerItemsAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View view, ViewGroup parent) {
+        Cursor crs=db.query_oggetto();
         ViewHolder holder;
         if (view == null) {
             //view = LayoutInflater.from(context).inflate(R.layout.sample_list_detail_item, parent, false);
@@ -47,9 +61,14 @@ final class DrawerItemsAdapter extends BaseAdapter {
         }
 
         // Get the image URL for the current position.
-        String url = getItem(position);
+        crs.moveToPosition(position);
+        String url = "file://" + crs.getString(crs.getColumnIndex(DBStrings.Oggetti_ICONA_PATH)); //getItem(position);
 
-        holder.text.setText(url);
+        String nome = crs.getString(crs.getColumnIndex(DBStrings.Oggetti_NOME));
+        holder.text.setText(nome);
+
+        System.out.println(nome);
+        System.out.println(url);
 
         // Trigger the download of the URL asynchronously into the image view.
         Picasso.with(context)
@@ -60,6 +79,27 @@ final class DrawerItemsAdapter extends BaseAdapter {
                 .centerInside()
                 .tag(context)
                 .into(holder.image);
+
+/*
+        String nome=crs.getString(crs.getColumnIndex(DBStrings.Cassetti_NOME));
+        String path=crs.getString(crs.getColumnIndex(DBStrings.Cassetti_ICONA_PATH));
+
+        TextView txt=(TextView) v.findViewById(R.id.txt_subject);
+        txt.setText(nome);
+
+        txt=(TextView) v.findViewById(R.id.txt_date);
+        txt.setText(path);
+
+        byte[] blob_img = crs.getBlob(crs.getColumnIndex(DBStrings.Cassetti_ICONA_BLOB));
+        if(blob_img!=null) {
+            Bitmap img = BitmapFactory.decodeByteArray(blob_img, 0, blob_img.length);
+            ImageView imgview = (ImageView) v.findViewById(R.id.img);
+            imgview.setImageBitmap(img);
+        }
+
+        ImageButton imgbtn=(ImageButton) v.findViewById(R.id.btn_delete);
+        imgbtn.setOnClickListener(clickListener);*/
+
 
         return view;
     }

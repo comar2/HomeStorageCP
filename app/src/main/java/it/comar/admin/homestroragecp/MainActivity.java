@@ -3,10 +3,7 @@ package it.comar.admin.homestroragecp;
 import android.app.ActionBar;
 import android.app.Dialog;
 
-
-//import android.app.FragmentManager;
-//import android.app.FragmentTransaction;
-
+import android.graphics.Path;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
@@ -17,12 +14,18 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
-import android.widget.Toast;
 
+import java.io.File;
+import java.net.URI;
+import java.util.ArrayList;
 
+import it.comar.admin.homestroragecp.database.DBManager;
+
+/**
+ * Attivita principale della applicazione.
+ */
 public class MainActivity extends FragmentActivity
-        implements MainActivityFragmentRight.OnFragmentInteractionListener,
-        DrawersScrollVertFragment.OnFragmentInteractionListener,
+        implements DrawersScrollVertFragment.OnFragmentInteractionListener,
         DrawerItemFragment.OnDrawerItemFragmentInteractionListener
 {
 
@@ -50,7 +53,7 @@ public class MainActivity extends FragmentActivity
             // Call a method in the ArticleFragment to update its content
             scrollFrag.updateScrollItemView(pos);
 
-        } else {
+        } /*else {
 //            // If the frag is not available, we're in the one-pane layout and must swap frags...
 //
 //            // Create fragment and give it an argument for the selected article
@@ -67,47 +70,83 @@ public class MainActivity extends FragmentActivity
 //
 //            // Commit the transaction
 //            transaction.commit();
-        }
+        }*/
     }
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setContentView(R.layout.activity_main);
         setContentView(R.layout.main);
 
         //getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
 
 
         ActionBar actionBar = getActionBar();
+
         actionBar.hide();
 // more stuff here...
         actionBar.show();
 
+        //Il fragment che contiene l'elenco dei cassetti
         leftFragment = (FrameLayout) findViewById(R.id.fragmentLeft);
+        //Il fragment che contiene la visualizzazione delle caratteristiche del cassetto e del suo contenuto
         rightFrame = (FrameLayout) findViewById(R.id.fragmentRight);
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
-        if (savedInstanceState == null) {
-//            getSupportFragmentManager().beginTransaction()
-//                    .add(R.id.fragmentLeft,MainActivityFragmentRight_ListItems.newInstance())
-//                    .commit();
-            //fragmentTransaction.add(R.id.fragmentLeft, MainActivityFragmentLeft.newInstance("frammento left"));
-            // Create an instance of ExampleFragment
+        if (savedInstanceState == null) {//se si e alla prima eseczione di onCreate
+
+            // Crea una istanza di DrawerItemFragment e la aggiunge nel container R.id.fragmentLeft
             fragmentTransaction.add(R.id.fragmentLeft, DrawerItemFragment.newInstance("DrawerItemFragment", "bbbb"));
             fragmentTransaction.commit();
 
             fragmentTransaction = fragmentManager.beginTransaction();
-            //fragmentTransaction.add(R.id.fragmentRight, MainActivityFragmentRight_ListItems.newInstance());
-            //fragmentTransaction.add(R.id.fragmentRight, MainActivityFragmentRight.newInstance("aaa","bbbb"));
 
-            fragmentTransaction.add(R.id.fragmentRight, DrawersScrollVertFragment.newInstance("DrawersScrollVertFragment","bb"));
+            // Crea una istanza di DrawerScrollVertFragment e la aggiunge nel container R.id.fragmentRight
+            fragmentTransaction.add(R.id.fragmentRight, DrawersScrollVertFragment.newInstance("DrawersScrollVertFragment", "bb"));
             fragmentTransaction.commit();
+        }
 
 
+        //TODO rimuovere dopo i test
+        //popolo il database come test
+        DBManager db = new DBManager(this);
+        if (db.query_cassetto().getCount() == 0){
+
+            for (int i = 1; i <= 19; i++) {
+                String nome_record = "Cassetto " + i;
+                String path_record = i < 10 ? "/storage/emulated/0/Android/data/it.comar.admin.homestoragecp/files.cassetti/c0" + i : "/storage/emulated/0/Android/data/it.comar.admin.homestoragecp/files.cassetti/c" + i;
+                byte[] b_img = new byte[1];
+                b_img[0] = 1;
+                db.save_cassetto(nome_record, path_record, b_img);
+            }
+            for (int i = 1; i <= 19; i++) {
+                String path = i < 10 ? "/storage/emulated/0/Android/data/it.comar.admin.homestroragecp/files/cassetti/c0" + i : "/storage/emulated/0/Android/data/it.comar.admin.homestroragecp/files/cassetti/c" + i;
+                //System.out.println(path);
+                File f = new File(path);
+                if (f.exists()) {
+                    File[] files = f.listFiles();
+
+                    ArrayList<String> arrayFiles = new ArrayList<String>();
+                    if (files.length == 0) {
+                    } else {
+                        for (int j = 0; j < files.length; j++)
+                            arrayFiles.add(files[j].getAbsolutePath());
+                    }
+
+                    for (int k = 0; k < arrayFiles.size(); k++) {
+                        String nome_record = "Oggetto " + (k + 1);
+                        String path_record = arrayFiles.get(k);
+                        byte[] b_img = new byte[1];
+                        b_img[0] = 1;
+                        db.save_oggetto(nome_record, path_record, b_img, i);
+                    }
+                } else {
+                    System.out.println("cartella non esistente" + i);
+                }
+            }
         }
     }
 
@@ -140,45 +179,4 @@ public class MainActivity extends FragmentActivity
 
         return super.onOptionsItemSelected(item);
     }
-
-//    void showDetails(String url) {
-//        getSupportFragmentManager().beginTransaction()
-//                .replace(R.id.fragmentLeft, MainActivityFragmentRight_ListItems.newInstance(url))
-//                .addToBackStack(null)
-//                .commit();
-//    }
-
-    /*
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        MenuItem logToggle = menu.findItem(R.id.menu_toggle_log);
-        logToggle.setVisible(findViewById(R.id.sample_output) instanceof ViewAnimator);
-        logToggle.setTitle(mLogShown ? R.string.sample_hide_log : R.string.sample_show_log);
-
-        return super.onPrepareOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch(item.getItemId()) {
-            case R.id.menu_toggle_log:
-                mLogShown = !mLogShown;
-                ViewAnimator output = (ViewAnimator) findViewById(R.id.sample_output);
-                if (mLogShown) {
-                    output.setDisplayedChild(1);
-                } else {
-                    output.setDisplayedChild(0);
-                }
-                supportInvalidateOptionsMenu();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-    */
 }
