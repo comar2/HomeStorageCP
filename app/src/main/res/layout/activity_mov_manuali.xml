@@ -1,0 +1,154 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="${relativePackage}.${activityClass}" >
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TableLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/textView1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="SERVICE ACTIVITY" />
+
+                <AutoCompleteTextView
+                    android:id="@+id/autoTextServiceView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/textView_adk"
+                    android:ems="10"
+                    android:text="AutoCompleteTextView" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="match_parent">
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/TextView_adkmsg"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:text="Large Text"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:layout_alignParentEnd="false"
+                        android:layout_alignParentStart="false"
+                        android:layout_alignParentTop="true" />
+
+                    <Button
+                        android:id="@+id/btnSendCommand"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="SendCommand"
+                        android:maxLines="5"
+                        android:minLines="3"
+                        android:layout_alignParentBottom="false"
+                        android:layout_alignParentStart="false"
+                        android:layout_alignParentEnd="false"
+                        android:layout_alignParentTop="false"
+                        android:layout_alignParentRight="false"
+                        android:layout_toLeftOf="@+id/numCassetto_Picker"
+                        android:layout_alignBottom="@+id/numCassetto_Picker" />
+
+                    <NumberPicker
+                        android:id="@+id/numCassetto_Picker"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_column="1"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentEnd="false"
+                        android:baselineAligned="false"
+                        android:layout_alignParentRight="true" />
+
+                </RelativeLayout>
+
+            </TableRow>
+        </TableLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/btnChiamaCassetto"
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:text="ChiamaCassetto"
+                android:layout_weight="1" />
+
+            <Button
+                android:id="@+id/btnStop"
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:text="STOP"
+                android:layout_weight="1" />
+
+            <Button
+                android:id="@+id/btnResetCassetti"
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:text="ResetCassetti"
+                android:layout_weight="1" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/btnStartCicloAuto"
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:text="START CicloAuto"
+                android:layout_weight="1" />
+
+            <Button
+                android:id="@+id/btnStopCicloAuto"
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:text="STOP CicloAuto"
+                android:layout_weight="1" />
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:text="New Button"
+                android:id="@+id/button"
+                android:layout_weight="1" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/textView_adk"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Large Text"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <TextView
+            android:id="@+id/textViewArduinoLog"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="TextViewArduinoLog" />
+
+    </LinearLayout>
+
+</RelativeLayout>

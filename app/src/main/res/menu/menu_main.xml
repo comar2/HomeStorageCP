@@ -3,4 +3,5 @@
     xmlns:tools="http://schemas.android.com/tools">
     <item android:id="@+id/action_settings" android:title="@string/action_settings" android:orderInCategory="100" app:showAsAction="always" />
     <item android:id="@+id/menu_main_users" android:title="@string/menu_main_users" android:orderInCategory="100" app:showAsAction="always" />
+    <item android:id="@+id/menu_main_man_mov" android:title="@string/menu_main_man_mov" android:orderInCategory="100" app:showAsAction="always" />
 </menu>

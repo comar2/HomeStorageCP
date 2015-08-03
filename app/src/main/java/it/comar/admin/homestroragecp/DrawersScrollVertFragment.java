@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -19,6 +20,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -88,10 +90,10 @@ public class DrawersScrollVertFragment extends Fragment {
          * color, which are used by {@link SlidingTabLayout}.
          */
         int index = 1;
-        for(String itm : listaCassetti){
+        for (String itm : listaCassetti) {
             mTabs.add(new SamplePagerItem(itm,
-                    Color.rgb(rand.nextInt(200)+55,rand.nextInt(200)+55,rand.nextInt(255)),
-                    Color.rgb(rand.nextInt(200)+55,rand.nextInt(255),rand.nextInt(255)),
+                    Color.rgb(rand.nextInt(200) + 55, rand.nextInt(200) + 55, rand.nextInt(255)),
+                    Color.rgb(rand.nextInt(200) + 55, rand.nextInt(255), rand.nextInt(255)),
                     index));
             index++;
         }
@@ -182,6 +184,7 @@ public class DrawersScrollVertFragment extends Fragment {
         verticalViewPager.setCurrentItem(position, true);
 
     }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -271,9 +274,8 @@ public class DrawersScrollVertFragment extends Fragment {
 //
 //            return fragment;
 //        }
-
         public static Drawer_ContentFragment newInstance(CharSequence title, int indicatorColor,
-                                                  int dividerColor, int pos) {
+                                                         int dividerColor, int pos) {
             Bundle bundle = new Bundle();
             bundle.putCharSequence(KEY_TITLE, title);
             bundle.putInt(KEY_INDICATOR_COLOR, indicatorColor);
@@ -298,21 +300,21 @@ public class DrawersScrollVertFragment extends Fragment {
             int drawerPos = 0;
             Bundle args = getArguments();
             if (args != null) {
-                if (args.containsKey(KEY_POS)){
+                if (args.containsKey(KEY_POS)) {
                     drawerPos = args.getInt(KEY_POS);
-                }
-                else {
+                } else {
                     drawerPos = 2;
                 }
 
             }
 
             // Inflate the layout for this fragment
-            View view =  inflater.inflate(R.layout.drawer_content_page, container, false);
+            View view = inflater.inflate(R.layout.drawer_content_page, container, false);
             ListView drawerItems = (ListView) view.findViewById(R.id.listView1);
+
             //ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, CassettiUrl.getCassettoUrl(drawerPos,this.getActivity()));
             //DrawersListAdapter ladapt = new DrawersListAdapter(getActivity());
-            DrawerItemsAdapter ladapt = new DrawerItemsAdapter(getActivity(),drawerPos);
+            DrawerItemsAdapter ladapt = new DrawerItemsAdapter(getActivity(), drawerPos);
 
             drawerItems.setAdapter(ladapt);
 
@@ -378,6 +380,7 @@ public class DrawersScrollVertFragment extends Fragment {
         }
 
         // BEGIN_INCLUDE (pageradapter_getpagetitle)
+
         /**
          * Return the title of the item at {@code position}. This is important as what this method
          * returns is what is displayed in the {@link DrawersScrollVertFragment}.
