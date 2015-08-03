@@ -143,7 +143,7 @@ public class MainActivity extends FragmentActivity
                         String path_record = arrayFiles.get(k);
                         byte[] b_img = new byte[1];
                         b_img[0] = 1;
-                        db.save_oggetto(nome_record, path_record, b_img, i);
+                        db.save_oggetto(nome_record, path_record, true, b_img, i);
                     }
                 } else {
                     System.out.println("cartella non esistente" + i);

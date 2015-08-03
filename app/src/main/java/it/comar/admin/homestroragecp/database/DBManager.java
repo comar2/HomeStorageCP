@@ -97,7 +97,7 @@ public class DBManager {
         }
     }
     //TODO eliminare quando si e completato salva.
-    public void save_oggetto(String nome, String path, byte[] bit_array_immagine, int cassetto_id)
+    public void save_oggetto(String nome, String path, boolean presente , byte[] bit_array_immagine, int cassetto_id)
     {
         SQLiteDatabase db=dboh.getWritableDatabase();
         //System.out.println(cassetto_id+" "+nome + " " + path);
@@ -106,9 +106,10 @@ public class DBManager {
         cv.put(DBStrings.Oggetti_ICONA_PATH, path);
         cv.put(DBStrings.Oggetti_ICONA_BLOB,bit_array_immagine);
         cv.put(DBStrings.Oggetti_CASSETTO_ID,cassetto_id);
+        cv.put(DBStrings.Oggetti_PRESENTE, presente);
         try
         {
-            db.insert(DBStrings.TBL_Oggetti, null,cv);
+            System.out.println(db.insert(DBStrings.TBL_Oggetti, null, cv));
         }
         catch (SQLiteException sqle)
         {
@@ -132,6 +133,21 @@ public class DBManager {
         }
     }
 
+    public void update_oggetto(int id, Boolean presente){
+
+        SQLiteDatabase db=dboh.getWritableDatabase();
+
+        ContentValues cv = new ContentValues();
+        cv.put(DBStrings.Oggetti_PRESENTE, presente);
+        try
+        {
+            int i = db.update(DBStrings.TBL_Oggetti, cv, DBStrings.Oggetti_ID + " = ?", new String[]{Integer.toString(id)} );
+        }
+        catch (SQLiteException sqle)
+        {
+            // Gestione delle eccezioni
+        }
+    }
 
     public boolean delete_cassetto(long id)
     {
@@ -190,6 +206,36 @@ Cursor query (String table,
             return null;
         }
         return crs;
+    }
+
+    public Cursor query_oggetto_id(int id)
+    {
+        Cursor crs=null;
+        try
+        {
+            SQLiteDatabase db=dboh.getReadableDatabase();
+
+            String[] tableColumns = new String[] {
+                    "\"" + DBStrings.Oggetti_ID + "\""};
+
+            String whereClause ="\"" + DBStrings.Oggetti_ID +"\" = ?";
+
+            String[] whereArgs = new String[] {
+                    Integer.toString(id)
+            };
+
+            //crs=db.query(DBStrings.TBL_Oggetti, tableColumns, whereClause, whereArgs, null, null, null);
+            //"SELECT PRESENTE FROM OGGETTI WHERE _ID = 5";
+
+            String selectQuery = "SELECT PRESENTE FROM OGGETTI WHERE _ID = ?";
+            crs = db.rawQuery(selectQuery, new String[] { Integer.toString(id) });
+        }
+        catch(SQLiteException sqle)
+        {
+            return null;
+        }
+        return crs;
+
     }
 
 }

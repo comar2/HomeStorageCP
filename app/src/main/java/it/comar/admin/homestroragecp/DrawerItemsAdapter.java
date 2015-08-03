@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import it.comar.admin.homestroragecp.database.DBManager;
 import it.comar.admin.homestroragecp.database.DBStrings;
 
+
 final class DrawerItemsAdapter extends BaseAdapter {
     private final Context context;
     private final ArrayList<String> urls;// = new ArrayList<String>();
@@ -51,13 +52,18 @@ final class DrawerItemsAdapter extends BaseAdapter {
     @Override
     public View getView(final int position, View view, ViewGroup parent) {
         final ViewHolder holder;
+        Cursor crs=db.query_oggetto();
+        crs.moveToPosition(position);
+        final int id = crs.getInt(crs.getColumnIndex(DBStrings.Oggetti_ID));
+
+
         if (view == null) {
-            //view = LayoutInflater.from(context).inflate(R.layout.sample_list_detail_item, parent, false);
             view = LayoutInflater.from(context).inflate(R.layout.drawer_list_item, parent, false);
             holder = new ViewHolder();
             holder.image = (ImageView) view.findViewById(R.id.photo);
             holder.text = (TextView) view.findViewById(R.id.url);
             holder.getButton = (Button) view.findViewById(R.id.get_button);
+
 
             holder.getButton.setOnClickListener(
                     (new View.OnClickListener()
@@ -65,8 +71,28 @@ final class DrawerItemsAdapter extends BaseAdapter {
                             @Override
                             public void onClick(View v)
                             {
+
+                                Cursor c=db.query_oggetto_id(id);
+                                System.out.println(v.getId());
+                                System.out.println(position);
+                                System.out.println(id);
+                                c.moveToFirst();
+                                int pres =c.getInt(c.getColumnIndex(DBStrings.Oggetti_PRESENTE));
+
                                 // Your code that you want to execute on this button click
                                 Toast.makeText(v.getContext(), "position: " +Integer.toString(position), Toast.LENGTH_SHORT).show();
+
+                                System.out.println(pres);
+                                if (pres==0) {
+
+                                    db.update_oggetto(id, true);
+                                    holder.image.setImageAlpha(255);
+                                }
+                                else{
+                                    db.update_oggetto(id, false);
+                                    holder.image.setImageAlpha(120);
+                                }
+
                             }
 
                         })
@@ -87,7 +113,7 @@ final class DrawerItemsAdapter extends BaseAdapter {
         }
 
         // Get the image URL for the current position.
-        crs.moveToPosition(position);
+
         String url = "file://" + crs.getString(crs.getColumnIndex(DBStrings.Oggetti_ICONA_PATH)); //getItem(position);
 
         String nome = crs.getString(crs.getColumnIndex(DBStrings.Oggetti_NOME));
@@ -104,8 +130,15 @@ final class DrawerItemsAdapter extends BaseAdapter {
                 .resizeDimen(R.dimen.list_detail_image_size, R.dimen.list_detail_image_size)
                 .centerInside()
                 .tag(context)
+
                 .into(holder.image);
 
+        if (crs.getInt(crs.getColumnIndex(DBStrings.Oggetti_PRESENTE))==0) {
+            holder.image.setImageAlpha(255);
+        }
+        else{
+            holder.image.setImageAlpha(120);
+        }
 /*
         String nome=crs.getString(crs.getColumnIndex(DBStrings.Cassetti_NOME));
         String path=crs.getString(crs.getColumnIndex(DBStrings.Cassetti_ICONA_PATH));
