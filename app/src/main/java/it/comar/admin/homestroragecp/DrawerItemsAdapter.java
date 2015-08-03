@@ -27,11 +27,13 @@ import it.comar.admin.homestroragecp.database.DBStrings;
 final class DrawerItemsAdapter extends BaseAdapter {
     private final Context context;
     private final ArrayList<String> urls;// = new ArrayList<String>();
+    private final int numcassetto;
 
     private DBManager db=null;
 
     public DrawerItemsAdapter(Context context, int pos) {
         this.context = context;
+        numcassetto = pos;
 
         db=new DBManager(context);
 
@@ -63,6 +65,8 @@ final class DrawerItemsAdapter extends BaseAdapter {
             holder.image = (ImageView) view.findViewById(R.id.photo);
             holder.text = (TextView) view.findViewById(R.id.url);
             holder.getButton = (Button) view.findViewById(R.id.get_button);
+            holder.numcassetto = numcassetto;
+            holder.objid = id;
 
 
             holder.getButton.setOnClickListener(
@@ -80,7 +84,11 @@ final class DrawerItemsAdapter extends BaseAdapter {
                                 int pres =c.getInt(c.getColumnIndex(DBStrings.Oggetti_PRESENTE));
 
                                 // Your code that you want to execute on this button click
-                                Toast.makeText(v.getContext(), "position: " +Integer.toString(position), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(v.getContext(), "position: " + Integer.toString(position)
+                                                                + "\n holder.numcassetto: " + Integer.toString(holder.numcassetto)
+                                                                + "\n holder.objid: " + Integer.toString(holder.objid)
+
+                                        , Toast.LENGTH_SHORT).show();
 
                                 System.out.println(pres);
                                 if (pres==0) {
@@ -182,5 +190,7 @@ final class DrawerItemsAdapter extends BaseAdapter {
         ImageView image;
         TextView text;
         Button getButton;
+        int numcassetto;
+        int  objid;
     }
 }
