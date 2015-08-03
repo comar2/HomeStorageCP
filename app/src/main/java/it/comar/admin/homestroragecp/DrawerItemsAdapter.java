@@ -4,9 +4,12 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -33,14 +36,38 @@ final class DrawerItemsAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View view, ViewGroup parent) {
-        ViewHolder holder;
+    public View getView(final int position, View view, ViewGroup parent) {
+        final ViewHolder holder;
         if (view == null) {
             //view = LayoutInflater.from(context).inflate(R.layout.sample_list_detail_item, parent, false);
             view = LayoutInflater.from(context).inflate(R.layout.drawer_list_item, parent, false);
             holder = new ViewHolder();
             holder.image = (ImageView) view.findViewById(R.id.photo);
             holder.text = (TextView) view.findViewById(R.id.url);
+            holder.getButton = (Button) view.findViewById(R.id.get_button);
+
+            holder.getButton.setOnClickListener(
+                    (new View.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(View v)
+                            {
+                                // Your code that you want to execute on this button click
+                                Toast.makeText(v.getContext(), "position: " +Integer.toString(position), Toast.LENGTH_SHORT).show();
+                            }
+
+                        })
+            );
+//            holder.getButton.setOnClickListener(
+//                    (new AdapterView.OnItemClickListener()
+//                    {
+//                        @Override
+//                        public void onItemClick(AdapterView<?> arg0, View arg1,int position, long arg3)
+//                        {
+//                            Toast.makeText(arg0.getActivity(), "" + position, Toast.LENGTH_SHORT).show();
+//                        }
+//                    })
+//            );
             view.setTag(holder);
         } else {
             holder = (ViewHolder) view.getTag();
@@ -82,5 +109,6 @@ final class DrawerItemsAdapter extends BaseAdapter {
     static class ViewHolder {
         ImageView image;
         TextView text;
+        Button getButton;
     }
 }

@@ -73,11 +73,6 @@ public class DrawerItemFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_drawer_item, container, false);
-//
-//        //Find the +1 button
-//        mPlusOneButton = (PlusOneButton) view.findViewById(R.id.plus_one_button);
-//
-//        return view;
 
 //        final MainActivityFragmentAdapter adapter = new MainActivityFragmentAdapter(this.getActivity());
         ListView listView = (ListView) view.findViewById(R.id.listView);
