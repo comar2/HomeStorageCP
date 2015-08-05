@@ -22,6 +22,7 @@ import java.net.URI;
 import java.util.ArrayList;
 
 import it.comar.admin.homestroragecp.database.DBManager;
+import it.comar.arduino.service.AdkService;
 
 /**
  * Attivita principale della applicazione.
@@ -110,6 +111,12 @@ public class MainActivity extends FragmentActivity
             fragmentTransaction.add(R.id.fragmentRight, DrawersScrollVertFragment.newInstance("DrawersScrollVertFragment", "bb"));
             fragmentTransaction.commit();
         }
+
+        //avvio il servizio per controllare arduino
+        Intent intent = new Intent(this, AdkService.class);
+        // add infos for the service which file to download and where to store
+        //intent.putExtra(AdkServiceOld.GENERIC_MSG, "index.html");
+        startService(intent);
 
 
         //TODO rimuovere dopo i test

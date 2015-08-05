@@ -24,6 +24,7 @@ public class DBManager {
 
     private Map<Tabelle,String> dizionario_tabelle =  new HashMap<Tabelle,String>();
 
+    public DBOpenHelper getDBOH(){return dboh;}
 
     public DBManager(Context ctx){
         dboh = new DBOpenHelper(ctx);
@@ -147,6 +148,7 @@ public class DBManager {
         {
             // Gestione delle eccezioni
         }
+        db.close();
     }
 
     public boolean delete_cassetto(long id)
@@ -192,14 +194,16 @@ Cursor query (String table,
         return crs;
     }
 
-    public Cursor query_oggetto()
+    public Cursor query_oggetto(int idCassetto)
     {
         Cursor crs=null;
         try
         {
             SQLiteDatabase db=dboh.getReadableDatabase();
-            //dovrebbe cercare tutti i record della tabella cassetti
-            crs=db.query(DBStrings.TBL_Oggetti, null, null, null, null, null, null, null);
+            //dovrebbe cercare tutti i record della tabella oggetti del dato cassetto
+
+            String selectQuery = "SELECT * FROM OGGETTI WHERE CASSETTO_ID = ?";
+            crs = db.rawQuery(selectQuery, new String[]{Integer.toString(idCassetto)});
         }
         catch(SQLiteException sqle)
         {
@@ -208,33 +212,26 @@ Cursor query (String table,
         return crs;
     }
 
-    public Cursor query_oggetto_id(int id)
+    public /*Cursor*/ Boolean query_oggetto_id_presente(int id)
     {
         Cursor crs=null;
+        Boolean pres;
         try
         {
             SQLiteDatabase db=dboh.getReadableDatabase();
 
-            String[] tableColumns = new String[] {
-                    "\"" + DBStrings.Oggetti_ID + "\""};
-
-            String whereClause ="\"" + DBStrings.Oggetti_ID +"\" = ?";
-
-            String[] whereArgs = new String[] {
-                    Integer.toString(id)
-            };
-
-            //crs=db.query(DBStrings.TBL_Oggetti, tableColumns, whereClause, whereArgs, null, null, null);
-            //"SELECT PRESENTE FROM OGGETTI WHERE _ID = 5";
-
             String selectQuery = "SELECT PRESENTE FROM OGGETTI WHERE _ID = ?";
             crs = db.rawQuery(selectQuery, new String[] { Integer.toString(id) });
+            crs.moveToFirst();
+            pres = crs.getInt(crs.getColumnIndex(DBStrings.Oggetti_PRESENTE))!=0?true:false;
+            crs.close();db.close();
         }
         catch(SQLiteException sqle)
         {
             return null;
         }
-        return crs;
+
+        return pres;
 
     }
 

@@ -39,9 +39,6 @@ public class DrawerItemFragment extends Fragment {
     private String mParam2;
 
 
-
-    private DBManager db=null;
-
     private OnDrawerItemFragmentInteractionListener mListener;
 
     /**
@@ -92,7 +89,7 @@ public class DrawerItemFragment extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView parent, View view, int position, long id) {
 
-                String selectedValue = (String) parent.getAdapter().getItem(position).toString();
+                String selectedValue = parent.getAdapter().getItem(position).toString();
 
                 // When clicked, show a toast with the TextView text
                 Toast.makeText(getActivity(), "selectedValue: " + selectedValue + "; position: " + Integer.toString(position), Toast.LENGTH_SHORT).show();

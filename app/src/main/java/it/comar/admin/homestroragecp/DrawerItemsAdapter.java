@@ -1,17 +1,16 @@
 package it.comar.admin.homestroragecp;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.DropBoxManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,6 +21,8 @@ import java.util.ArrayList;
 
 import it.comar.admin.homestroragecp.database.DBManager;
 import it.comar.admin.homestroragecp.database.DBStrings;
+import it.comar.admin.homestroragecp.database.DBUpdateAsyncTask;
+import it.comar.arduino.service.AdkService;
 
 
 final class DrawerItemsAdapter extends BaseAdapter {
@@ -54,7 +55,7 @@ final class DrawerItemsAdapter extends BaseAdapter {
     @Override
     public View getView(final int position, View view, ViewGroup parent) {
         final ViewHolder holder;
-        Cursor crs=db.query_oggetto();
+        Cursor crs=db.query_oggetto(numcassetto);
         crs.moveToPosition(position);
         final int id = crs.getInt(crs.getColumnIndex(DBStrings.Oggetti_ID));
 
@@ -70,40 +71,59 @@ final class DrawerItemsAdapter extends BaseAdapter {
 
 
             holder.getButton.setOnClickListener(
-                    (new View.OnClickListener()
+                (new View.OnClickListener()
+                    {
+                        @Override
+                        public void onClick(View v)
                         {
-                            @Override
-                            public void onClick(View v)
-                            {
+                            System.out.println("bottone pigiato");
 
-                                Cursor c=db.query_oggetto_id(id);
-                                System.out.println(v.getId());
-                                System.out.println(position);
-                                System.out.println(id);
-                                c.moveToFirst();
-                                int pres =c.getInt(c.getColumnIndex(DBStrings.Oggetti_PRESENTE));
+                            //Cursor c=db.query_oggetto_id_presente(id);
 
-                                // Your code that you want to execute on this button click
-                                Toast.makeText(v.getContext(), "position: " + Integer.toString(position)
-                                                                + "\n holder.numcassetto: " + Integer.toString(holder.numcassetto)
-                                                                + "\n holder.objid: " + Integer.toString(holder.objid)
+                            //System.out.println("id view " + v.getId());
+                            //System.out.println("position " + position);
+                            //System.out.println("id oggetto " + id);
 
-                                        , Toast.LENGTH_SHORT).show();
+                            //c.moveToFirst();
+                            //int pres =c.getInt(c.getColumnIndex(DBStrings.Oggetti_PRESENTE));
+                            Boolean pres = db.query_oggetto_id_presente(id);
+                            // Your code that you want to execute on this button click
+                           /* Toast.makeText(v.getContext(), "presente: " + Integer.toString(pres)
+                                                            + "\n holder.numcassetto: " + Integer.toString(holder.numcassetto)
+                                                            + "\n holder.objid: " + Integer.toString(holder.objid)
+                                    , Toast.LENGTH_SHORT).show();
+                            */
+                            System.out.println("presente " + pres);
 
-                                System.out.println(pres);
-                                if (pres==0) {
+                            DBUpdateAsyncTask asynctask = new DBUpdateAsyncTask(db.getDBOH());
 
-                                    db.update_oggetto(id, true);
-                                    holder.image.setImageAlpha(255);
-                                }
-                                else{
-                                    db.update_oggetto(id, false);
-                                    holder.image.setImageAlpha(120);
-                                }
+                            if (pres==false/*==0*/) {
 
+                                //db.update_oggetto(id, true);
+                                asynctask.execute(new Integer[]{new Integer(id), new Integer(1)});
+                                holder.image.setImageAlpha(255);
+                                holder.getButton.setText("Estrai");
                             }
+                            else{
+                                //db.update_oggetto(id, false);
+                                asynctask.execute(new Integer[]{new Integer(id), new Integer(0)});
+                                holder.image.setImageAlpha(120);
+                                holder.getButton.setText("Inserisci");
+                            }
+                            System.out.println("Eseguito aggiornamento icona");
 
-                        })
+
+                            String command = AdkService.SEND_MSG_CHIAMA_CASSETTO;
+                            String params = Integer.toString(holder.numcassetto-1); //La macchina indicizza con base  0, io chiamo i cassetti con base 1
+                            Intent intent = new Intent(AdkService.SEND_ADK_STRING);
+                            intent.putExtra(AdkService.MSG_COMMAND, command);
+                            intent.putExtra(AdkService.MSG_PARAMS, params);
+                            context.sendBroadcast(intent);
+
+                            System.out.println("inviato intent");
+                        }
+                    }
+                )
             );
 //            holder.getButton.setOnClickListener(
 //                    (new AdapterView.OnItemClickListener()
@@ -127,8 +147,8 @@ final class DrawerItemsAdapter extends BaseAdapter {
         String nome = crs.getString(crs.getColumnIndex(DBStrings.Oggetti_NOME));
         holder.text.setText(nome);
 
-        System.out.println(nome);
-        System.out.println(url);
+        //System.out.println(nome);
+        //System.out.println(url);
 
         // Trigger the download of the URL asynchronously into the image view.
         Picasso.with(context)
@@ -142,10 +162,12 @@ final class DrawerItemsAdapter extends BaseAdapter {
                 .into(holder.image);
 
         if (crs.getInt(crs.getColumnIndex(DBStrings.Oggetti_PRESENTE))==0) {
-            holder.image.setImageAlpha(255);
+            holder.image.setImageAlpha(120);
+            holder.getButton.setText("Inserisci");
         }
         else{
-            holder.image.setImageAlpha(120);
+            holder.image.setImageAlpha(255);
+            holder.getButton.setText("Estrai");
         }
 /*
         String nome=crs.getString(crs.getColumnIndex(DBStrings.Cassetti_NOME));

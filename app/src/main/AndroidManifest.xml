@@ -27,7 +27,18 @@
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
+
+                <!-- Allows your application to be notified of an attached USB accessory -->
+                <action android:name="android.hardware.usb.action.USB_ACCESSORY_ATTACHED" />
             </intent-filter>
+
+            <!--
+            External XML resources file declares identifying information about the accessory that
+			you want detect -->
+            <meta-data
+                android:name="android.hardware.usb.action.USB_ACCESSORY_ATTACHED"
+                android:resource="@xml/accessory_filter" />
+
         </activity>
 
         <activity
@@ -43,18 +54,18 @@
             android:exported="false" >
 
             <!-- Allows your application to be notified of an attached USB accessory -->
-            <intent-filter>
-                <action android:name="android.hardware.usb.action.USB_ACCESSORY_ATTACHED" />
-            </intent-filter>
+            <!-- <intent-filter>
+                 <action android:name="android.hardware.usb.action.USB_ACCESSORY_ATTACHED" />
+             </intent-filter>-->
 
-            <!--
-            External XML resources file declares identifying information about the accessory that
-			you want detect
+             <!--
+             External XML resources file declares identifying information about the accessory that
+             you want detect
 
-            -->
-            <meta-data
+             -->
+            <!--<meta-data
                 android:name="android.hardware.usb.action.USB_ACCESSORY_ATTACHED"
-                android:resource="@xml/accessory_filter" />
+                android:resource="@xml/accessory_filter" />-->
         </service>
     </application>
 

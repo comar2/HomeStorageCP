@@ -88,6 +88,8 @@ public class Activity_ManualMov extends Activity implements OnClickListener {
 //		//register a BroadcastReceiver to catch UsbManager.ACTION_USB_ACCESSORY_DETACHED action
 //		registerReceiver(mAdkManager.getUsbReceiver(), mAdkManager.getDetachedFilter());
 
+
+        //TODO l'avvio del servizio e eseguito sia qui che piu avanti (start service), decidere quale tenere.
         if (getIntent().getAction() != null && getIntent().getAction().equals(USB_ACCESSORY_ATTACHED)) {
             Intent service = new Intent(this, AdkService.class);
             service.putExtras(getIntent());

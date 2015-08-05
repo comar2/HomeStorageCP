@@ -1,6 +1,8 @@
 package it.comar.admin.homestroragecp;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
@@ -9,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -28,6 +31,8 @@ import java.util.Random;
 
 import fr.castorflex.android.verticalviewpager.VerticalViewPager;
 import it.comar.admin.homestroragecp.database.DBManager;
+import it.comar.admin.homestroragecp.database.DBUpdateAsyncTask;
+import it.comar.arduino.service.AdkService;
 
 
 /**
@@ -258,6 +263,8 @@ public class DrawersScrollVertFragment extends Fragment {
         private static final String KEY_DIVIDER_COLOR = "divider_color";
         private static final String KEY_POS = "drawer_position";
 
+        private Context context;
+
         /**
          * @return a new instance of {@link Drawer_ContentFragment}, adding the parameters into a bundle and
          * setting them as arguments.
@@ -297,6 +304,7 @@ public class DrawersScrollVertFragment extends Fragment {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
+            context = this.getActivity().getApplicationContext();
             int drawerPos = 0;
             Bundle args = getArguments();
             if (args != null) {
@@ -307,10 +315,33 @@ public class DrawersScrollVertFragment extends Fragment {
                 }
 
             }
+            final int posCassetto=drawerPos;
 
             // Inflate the layout for this fragment
             View view = inflater.inflate(R.layout.drawer_content_page, container, false);
             ListView drawerItems = (ListView) view.findViewById(R.id.listView1);
+            Button bottone_vai_a_cassetto= (Button) view.findViewById(R.id.bottone_vai_a_cassetto);
+            bottone_vai_a_cassetto.setOnClickListener(
+                    new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+
+                            System.out.println("preparo l'intent");
+                            System.out.println("posCassetto = " + posCassetto);
+
+                            String command = AdkService.SEND_MSG_CHIAMA_CASSETTO;
+                            String params = Integer.toString(posCassetto-1); //La macchina indicizza con base  0, io chiamo i cassetti con base 1
+                            Intent intent = new Intent(AdkService.SEND_ADK_STRING);
+                            intent.putExtra(AdkService.MSG_COMMAND, command);
+                            intent.putExtra(AdkService.MSG_PARAMS, params);
+                            context.sendBroadcast(intent);
+
+                            System.out.println("inviato intent");
+                        }
+                    }
+
+            );
+
 
             //ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, CassettiUrl.getCassettoUrl(drawerPos,this.getActivity()));
             //DrawersListAdapter ladapt = new DrawersListAdapter(getActivity());
