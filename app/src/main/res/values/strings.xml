@@ -3,7 +3,7 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="menu_main_users">users</string>
-
+    <string name="annulla">Annulla</string>
 
     <!-- Picasso Strings -->
     <string name="disk_cache_description">On Ice Cream Sandwich and above, a disk cache is
@@ -17,4 +17,5 @@
 
     <string name="menu_main_man_mov">movimenti manuali</string>
     <string name="vai_a_cassetto">Vai a cassetto</string>
+    <string name="aggiungi_oggetto_a_cassetto">Aggiungi oggetto</string>
 </resources>

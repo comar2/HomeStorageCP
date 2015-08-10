@@ -7,7 +7,9 @@ package it.comar.arduino.service;
 import java.io.FileDescriptor;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -24,6 +26,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.hardware.usb.UsbAccessory;
 import android.hardware.usb.UsbManager;
+import android.os.Environment;
 import android.os.IBinder;
 import android.os.ParcelFileDescriptor;
 import android.support.v4.app.NotificationCompat;
@@ -910,6 +913,8 @@ public class AdkService extends Service {
             }
         }
     };
+
+    //invia comandi all'adkservice?
     protected void sendAdkCommand(String text) {
         // TODO Auto-generated method stub
         byte[] buffer = text.getBytes();
@@ -926,5 +931,5 @@ public class AdkService extends Service {
     public static Integer getNumCassetti(){
         return myArmadioNumCassetti;
     }
-
 }
+

@@ -235,4 +235,32 @@ Cursor query (String table,
 
     }
 
+    public /*Cursor*/ int query_max_id_oggetto()
+    {
+        Cursor crs=null;
+        int maxid;
+        try
+        {
+            SQLiteDatabase db=dboh.getReadableDatabase();
+
+            String selectQuery = "SELECT MAX(_ID) FROM OGGETTI";
+            crs = db.rawQuery(selectQuery, null);
+            if (crs.getCount()>0)
+            {
+                crs.moveToFirst();
+                maxid = crs.getInt(crs.getPosition());
+            }
+            else
+                maxid=0;
+            crs.close();db.close();
+        }
+        catch(SQLiteException sqle)
+        {
+            return -1;
+        }
+
+        return maxid;
+
+    }
+
 }

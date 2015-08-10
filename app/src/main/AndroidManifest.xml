@@ -52,20 +52,6 @@
             android:name="it.comar.arduino.service.AdkService"
             android:enabled="true"
             android:exported="false" >
-
-            <!-- Allows your application to be notified of an attached USB accessory -->
-            <!-- <intent-filter>
-                 <action android:name="android.hardware.usb.action.USB_ACCESSORY_ATTACHED" />
-             </intent-filter>-->
-
-             <!--
-             External XML resources file declares identifying information about the accessory that
-             you want detect
-
-             -->
-            <!--<meta-data
-                android:name="android.hardware.usb.action.USB_ACCESSORY_ATTACHED"
-                android:resource="@xml/accessory_filter" />-->
         </service>
     </application>
 

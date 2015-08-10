@@ -7,23 +7,21 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
+
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
-
-//import android.app.Fragment;
-//import android.app.FragmentManager;
 
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +29,6 @@ import java.util.Random;
 
 import fr.castorflex.android.verticalviewpager.VerticalViewPager;
 import it.comar.admin.homestroragecp.database.DBManager;
-import it.comar.admin.homestroragecp.database.DBUpdateAsyncTask;
 import it.comar.arduino.service.AdkService;
 
 
@@ -44,6 +41,7 @@ import it.comar.arduino.service.AdkService;
  * create an instance of this fragment.
  */
 public class DrawersScrollVertFragment extends Fragment {
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -202,7 +200,7 @@ public class DrawersScrollVertFragment extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        public void onFragmentInteraction(Uri uri);
+        void onFragmentInteraction(Uri uri);
     }
 
     /**
@@ -315,6 +313,7 @@ public class DrawersScrollVertFragment extends Fragment {
                 }
 
             }
+
             final int posCassetto=drawerPos;
 
             // Inflate the layout for this fragment
@@ -342,12 +341,25 @@ public class DrawersScrollVertFragment extends Fragment {
 
             );
 
-
             //ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, CassettiUrl.getCassettoUrl(drawerPos,this.getActivity()));
             //DrawersListAdapter ladapt = new DrawersListAdapter(getActivity());
-            DrawerItemsAdapter ladapt = new DrawerItemsAdapter(getActivity(), drawerPos);
+            final DrawerItemsAdapter ladapt = new DrawerItemsAdapter(getActivity(), drawerPos);
 
             drawerItems.setAdapter(ladapt);
+
+            Button aggiungiOggettoButton = (Button) view.findViewById(R.id.bottone_aggiungi_oggetto_a_cassetto);
+
+            aggiungiOggettoButton.setOnClickListener(
+                    (new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            DialogFragment dialog = AggiungiOggettoDialog.newInstance(posCassetto);
+                            dialog.show(getActivity().getSupportFragmentManager(), "AggiungiOggettoDialog");
+                            ((MainActivity) getActivity()).setDrawerItemsAdapter(ladapt);
+                        }
+                    }
+                    )
+            );
 
 
             return view;
@@ -425,4 +437,20 @@ public class DrawersScrollVertFragment extends Fragment {
         // END_INCLUDE (pageradapter_getpagetitle)
 
     }
+/*
+    // The dialog fragment receives a reference to this Activity through the
+    // Fragment.onAttach() callback, which it uses to call the following methods
+    // defined by the NoticeDialogFragment.NoticeDialogListener interface
+    @Override
+    public void onDialogPositiveClick(DialogFragment dialog) {
+        // User touched the dialog's positive button
+        System.out.println("pigiato ok");
+    }
+
+    @Override
+    public void onDialogNegativeClick(DialogFragment dialog) {
+        // User touched the dialog's negative button
+        System.out.println("pigiato cancel");
+    }*/
+
 }

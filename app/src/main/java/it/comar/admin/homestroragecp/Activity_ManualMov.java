@@ -18,6 +18,12 @@ import android.widget.NumberPicker;
 import android.widget.NumberPicker.OnValueChangeListener;
 import android.widget.TextView;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Calendar;
+
 
 //import com.example.test01rfid.adktoolkit.*;
 
@@ -26,6 +32,10 @@ public class Activity_ManualMov extends Activity implements OnClickListener {
     private TextView textView_adk;
     private TextView textView_adkmsg;
     private TextView textView_LogArduino;
+
+    private String log_adk;
+    private String log_arduino;
+
     private AutoCompleteTextView autoTextServiceView;
     private Button btnSendCommand;
     private Button btnChiamaCassetto;
@@ -68,12 +78,19 @@ public class Activity_ManualMov extends Activity implements OnClickListener {
 //	              Toast.LENGTH_LONG).show();
 //	          textView.setText("Download failed");
 //	        }
-                if (string != null) textView_adk.setText(string);
+                Calendar c = Calendar.getInstance();
+                if (string != null){
+                    StringBuilder sbuilder = new StringBuilder(textView_adk.getText());
+                    sbuilder.append("\n" + c.getTime().toString() + "\t"  +  string);
+                    textView_adk.setText(sbuilder.toString());
+                    log_adk=sbuilder.toString();
+                }
                 if (adkstring != null) {
                     //textView_adkmsg.setText(adkstring);
                     StringBuilder sbuilder = new StringBuilder(textView_LogArduino.getText());
-                    sbuilder.append("\n" + adkstring);
+                    sbuilder.append("\n" + c.getTime().toString() + "\t"   + adkstring);
                     textView_LogArduino.setText(sbuilder.toString());
+                    log_arduino=sbuilder.toString();
                 }
             }
         }
@@ -91,9 +108,11 @@ public class Activity_ManualMov extends Activity implements OnClickListener {
 
         //TODO l'avvio del servizio e eseguito sia qui che piu avanti (start service), decidere quale tenere.
         if (getIntent().getAction() != null && getIntent().getAction().equals(USB_ACCESSORY_ATTACHED)) {
-            Intent service = new Intent(this, AdkService.class);
+
+            //il servizio adk per comunicare con arduino
+           /* Intent service = new Intent(this, AdkService.class);
             service.putExtras(getIntent());
-            startService(service);
+            startService(service);*/
 
             //Intent launch = new Intent(this, MainActivity.class);
             Intent launch = new Intent(this, Activity_ManualMov.class);
@@ -104,9 +123,11 @@ public class Activity_ManualMov extends Activity implements OnClickListener {
         registerReceiver(receiver, new IntentFilter(AdkService.NOTIFICATION));
 
         textView_adk = (TextView) findViewById(R.id.textView_adk);
-        textView_LogArduino = (TextView) findViewById(R.id.textViewArduinoLog);
+        textView_adk.setMovementMethod(new ScrollingMovementMethod());
 
+        textView_LogArduino = (TextView) findViewById(R.id.textViewArduinoLog);
         textView_LogArduino.setMovementMethod(new ScrollingMovementMethod());
+
         autoTextServiceView = (AutoCompleteTextView) findViewById(R.id.autoTextServiceView);
         btnSendCommand = (Button) findViewById(R.id.btnSendCommand);
         btnSendCommand.setOnClickListener(this);
@@ -139,11 +160,11 @@ public class Activity_ManualMov extends Activity implements OnClickListener {
             }
         });
         numCassetto_Picker.setWrapSelectorWheel(true);
-
+/*il servizio adk per comunicare con arduino
         Intent intent = new Intent(this, AdkService.class);
         // add infos for the service which file to download and where to store
         //intent.putExtra(AdkServiceOld.GENERIC_MSG, "index.html");
-        startService(intent);
+        startService(intent);*/
 
         textView_adk.setText("Service started");
 
@@ -164,6 +185,49 @@ public class Activity_ManualMov extends Activity implements OnClickListener {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+
+        if(log_arduino!=null && log_adk!=null) {
+            String path = getApplicationContext().getFilesDir().getAbsolutePath();
+            System.out.println(path);
+            File file_adk = new File(path + "/log_adk.txt");
+            File file_logArduino = new File(path + "/log_Arduino.txt");
+
+            FileOutputStream stream1 = null;
+            try {
+                stream1 = new FileOutputStream(file_adk);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            try {
+                stream1.write(log_adk.getBytes());
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    stream1.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            FileOutputStream stream2 = null;
+            try {
+                stream2 = new FileOutputStream(file_logArduino);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            try {
+                stream2.write(log_arduino.getBytes());
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    stream2.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
         unregisterReceiver(receiver);
 
     }

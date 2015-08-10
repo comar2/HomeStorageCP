@@ -3,17 +3,15 @@ package it.comar.admin.homestroragecp;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
+
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -25,19 +23,21 @@ import it.comar.admin.homestroragecp.database.DBUpdateAsyncTask;
 import it.comar.arduino.service.AdkService;
 
 
-final class DrawerItemsAdapter extends BaseAdapter {
+final class DrawerItemsAdapter extends BaseAdapter{
     private final Context context;
+
     private final ArrayList<String> urls;// = new ArrayList<String>();
     private final int numcassetto;
 
     private DBManager db=null;
-
+    Cursor crs;
     public DrawerItemsAdapter(Context context, int pos) {
         this.context = context;
         numcassetto = pos;
 
-        db=new DBManager(context);
 
+        db=new DBManager(context);
+        crs=db.query_oggetto(numcassetto);
         //Collections.addAll(urls, Data.URLS);
         //Collections.addAll(urls,ConfigArmadio.getDrawersNamesList());
         //List<SomeBean> newList = new ArrayList<SomeBean>(otherList);
@@ -55,9 +55,11 @@ final class DrawerItemsAdapter extends BaseAdapter {
     @Override
     public View getView(final int position, View view, ViewGroup parent) {
         final ViewHolder holder;
-        Cursor crs=db.query_oggetto(numcassetto);
+        crs=db.query_oggetto(numcassetto);
         crs.moveToPosition(position);
         final int id = crs.getInt(crs.getColumnIndex(DBStrings.Oggetti_ID));
+        //System.out.println("creazione vista");
+        //System.out.println("id" + id);
 
 
         if (view == null) {
@@ -76,7 +78,7 @@ final class DrawerItemsAdapter extends BaseAdapter {
                         @Override
                         public void onClick(View v)
                         {
-                            System.out.println("bottone pigiato");
+                            //System.out.println("bottone pigiato");
 
                             //Cursor c=db.query_oggetto_id_presente(id);
 
@@ -93,11 +95,11 @@ final class DrawerItemsAdapter extends BaseAdapter {
                                                             + "\n holder.objid: " + Integer.toString(holder.objid)
                                     , Toast.LENGTH_SHORT).show();
                             */
-                            System.out.println("presente " + pres);
+                            //System.out.println("presente " + pres);
 
                             DBUpdateAsyncTask asynctask = new DBUpdateAsyncTask(db.getDBOH());
 
-                            if (pres==false/*==0*/) {
+                            if (!pres/*==0*/) {
 
                                 //db.update_oggetto(id, true);
                                 asynctask.execute(new Integer[]{new Integer(id), new Integer(1)});
@@ -110,7 +112,7 @@ final class DrawerItemsAdapter extends BaseAdapter {
                                 holder.image.setImageAlpha(120);
                                 holder.getButton.setText("Inserisci");
                             }
-                            System.out.println("Eseguito aggiornamento icona");
+                            //System.out.println("Eseguito aggiornamento icona");
 
 
                             String command = AdkService.SEND_MSG_CHIAMA_CASSETTO;
@@ -120,7 +122,7 @@ final class DrawerItemsAdapter extends BaseAdapter {
                             intent.putExtra(AdkService.MSG_PARAMS, params);
                             context.sendBroadcast(intent);
 
-                            System.out.println("inviato intent");
+                            //System.out.println("inviato intent");
                         }
                     }
                 )
@@ -143,6 +145,7 @@ final class DrawerItemsAdapter extends BaseAdapter {
         // Get the image URL for the current position.
 
         String url = "file://" + crs.getString(crs.getColumnIndex(DBStrings.Oggetti_ICONA_PATH)); //getItem(position);
+
 
         String nome = crs.getString(crs.getColumnIndex(DBStrings.Oggetti_NOME));
         holder.text.setText(nome);
@@ -189,13 +192,12 @@ final class DrawerItemsAdapter extends BaseAdapter {
         ImageButton imgbtn=(ImageButton) v.findViewById(R.id.btn_delete);
         imgbtn.setOnClickListener(clickListener);*/
 
-
         return view;
     }
 
     @Override
     public int getCount() {
-        return urls.size();
+        return crs.getCount();//urls.size();
     }
 
     @Override
@@ -215,4 +217,6 @@ final class DrawerItemsAdapter extends BaseAdapter {
         int numcassetto;
         int  objid;
     }
+
+
 }

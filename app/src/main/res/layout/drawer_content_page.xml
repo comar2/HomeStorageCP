@@ -66,6 +66,15 @@
                     android:id="@+id/bottone_vai_a_cassetto"
                     android:layout_gravity="right"
                     />
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/aggiungi_oggetto_a_cassetto"
+                    android:id="@+id/bottone_aggiungi_oggetto_a_cassetto"
+                    android:layout_gravity="right"
+                    />
+
             </LinearLayout>
         </LinearLayout>
 

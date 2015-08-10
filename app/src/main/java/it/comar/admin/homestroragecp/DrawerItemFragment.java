@@ -1,21 +1,19 @@
 package it.comar.admin.homestroragecp;
 
 import android.app.Activity;
-import android.content.Context;
-import android.database.Cursor;
-import android.net.Uri;
+
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
+
 import android.widget.ListView;
-import android.widget.TextView;
+
 import android.widget.Toast;
 
-import it.comar.admin.homestroragecp.database.DBManager;
+
 
 /**
  * Un Fragment che contiene la lista dei cassetti della macchina
@@ -139,7 +137,7 @@ public class DrawerItemFragment extends Fragment {
      */
     public interface OnDrawerItemFragmentInteractionListener {
         // TODO: Update argument type and name
-        public void OnDrawerItemFragmentInteraction(int position);
+        void OnDrawerItemFragmentInteraction(int position);
     }
 
 }
