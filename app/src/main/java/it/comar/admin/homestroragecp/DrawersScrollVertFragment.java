@@ -325,8 +325,8 @@ public class DrawersScrollVertFragment extends Fragment {
                         @Override
                         public void onClick(View v) {
 
-                            System.out.println("preparo l'intent");
-                            System.out.println("posCassetto = " + posCassetto);
+                            //System.out.println("preparo l'intent");
+                            //System.out.println("posCassetto = " + posCassetto);
 
                             String command = AdkService.SEND_MSG_CHIAMA_CASSETTO;
                             String params = Integer.toString(posCassetto-1); //La macchina indicizza con base  0, io chiamo i cassetti con base 1
@@ -335,7 +335,7 @@ public class DrawersScrollVertFragment extends Fragment {
                             intent.putExtra(AdkService.MSG_PARAMS, params);
                             context.sendBroadcast(intent);
 
-                            System.out.println("inviato intent");
+                            //System.out.println("inviato intent");
                         }
                     }
 

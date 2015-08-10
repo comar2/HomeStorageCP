@@ -19,31 +19,26 @@ import java.util.ArrayList;
 import it.comar.admin.homestroragecp.database.DBManager;
 import it.comar.admin.homestroragecp.database.DBStrings;
 
+/*TODO se i dati vengono prelevati da un cursor ottenuto da un DB forse è meglio farlo ereditare da cursoradapter, piuttosto che da baseadapter e fare le modifiche del caso al codice*/
 final class DrawersListAdapter extends BaseAdapter  {
     private final Context context;
-    private final ArrayList<String> urls;// = new ArrayList<String>();
+    //private final ArrayList<String> urls;// = new ArrayList<String>();
 
     private DBManager db=null;
+    private Cursor crs;
 
     public DrawersListAdapter(Context context) {
         this.context = context;
         db=new DBManager(context);
+        crs=db.query_cassetto();
+        //urls = /*db.query_cassetto();*/new ArrayList<String>(ConfigArmadio.getDrawersNamesList(db));
 
-        //Collections.addAll(urls, Data.URLS);
-        //Collections.addAll(urls,ConfigArmadio.getDrawersNamesList());
-        //List<SomeBean> newList = new ArrayList<SomeBean>(otherList);
-        //urls = new ArrayList<String>(CassettiUrl.getCassettoUrlList(2, this.context));
-        //urls = new ArrayList<String>(CassettiUrl.getCassettoUrl2(2, this.context));
-
-        urls = /*db.query_cassetto();*/new ArrayList<String>(ConfigArmadio.getDrawersNamesList(db));
-
-        //Collections.addAll(urls,CassettiUrl.getCassettoUrl(2,this.context));
     }
 
     @Override
     public View getView(int position, View view, ViewGroup parent) {
 
-        Cursor crs=db.query_cassetto();
+        crs=db.query_cassetto();
         final ViewHolder holder;
         crs.moveToPosition(position);
 
@@ -87,12 +82,12 @@ final class DrawersListAdapter extends BaseAdapter  {
 
     @Override
     public int getCount() {
-        return urls.size();
+        return crs.getCount();
     }
 
     @Override
     public String getItem(int position) {
-        return urls.get(position);
+        return crs.getString(crs.getColumnIndex(DBStrings.Cassetti_ICONA_PATH));
     }
 
     @Override

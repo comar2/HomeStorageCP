@@ -188,7 +188,7 @@ public class Activity_ManualMov extends Activity implements OnClickListener {
 
         if(log_arduino!=null && log_adk!=null) {
             String path = getApplicationContext().getFilesDir().getAbsolutePath();
-            System.out.println(path);
+            //System.out.println(path);
             File file_adk = new File(path + "/log_adk.txt");
             File file_logArduino = new File(path + "/log_Arduino.txt");
 

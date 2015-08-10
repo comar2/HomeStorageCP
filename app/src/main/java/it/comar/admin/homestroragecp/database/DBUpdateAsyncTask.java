@@ -20,7 +20,7 @@ public class DBUpdateAsyncTask extends AsyncTask<Integer, Void, Boolean>{
 
     @Override
     protected Boolean doInBackground(Integer... params) {
-        System.out.println("avvio salvataggio su db da thread");
+        //System.out.println("avvio salvataggio su db da thread");
         Integer id = params[0];
         Integer presente = params[1];
 
@@ -43,7 +43,7 @@ public class DBUpdateAsyncTask extends AsyncTask<Integer, Void, Boolean>{
 
     @Override
     protected void onPostExecute(Boolean result) {
-        System.out.println("fine salvataggio su db da thread");
+        //System.out.println("fine salvataggio su db da thread");
 
     }
 }

@@ -22,34 +22,23 @@ import it.comar.admin.homestroragecp.database.DBStrings;
 import it.comar.admin.homestroragecp.database.DBUpdateAsyncTask;
 import it.comar.arduino.service.AdkService;
 
-
+/*TODO se i dati vengono prelevati da un cursor ottenuto da un DB forse è meglio farlo ereditare da cursoradapter, piuttosto che da baseadapter e fare le modifiche del caso al codice*/
 final class DrawerItemsAdapter extends BaseAdapter{
     private final Context context;
 
-    private final ArrayList<String> urls;// = new ArrayList<String>();
+    //private final ArrayList<String> urls;// = new ArrayList<String>();
     private final int numcassetto;
 
     private DBManager db=null;
-    Cursor crs;
+    private Cursor crs;
     public DrawerItemsAdapter(Context context, int pos) {
         this.context = context;
         numcassetto = pos;
 
-
         db=new DBManager(context);
         crs=db.query_oggetto(numcassetto);
-        //Collections.addAll(urls, Data.URLS);
-        //Collections.addAll(urls,ConfigArmadio.getDrawersNamesList());
-        //List<SomeBean> newList = new ArrayList<SomeBean>(otherList);
-        //urls = new ArrayList<String>(CassettiUrl.getCassettoUrlList(2, this.context));
-        //urls = new ArrayList<String>(CassettiUrl.getCassettoUrl2(2, this.context));
 
-
-        urls = new ArrayList<String>(CassettiUrl.getCassettoUrl3(pos, this.context));
-        //urls = new ArrayList<String>(CassettiUrl.getCassettoUrlList(pos, this.context));
-        //java.util.Collections.addAll(urls,CassettiUrl.getCassettoUrl(2,this.context));
-
-
+        //urls = new ArrayList<String>(CassettiUrl.getCassettoUrl3(pos, this.context));
     }
 
     @Override
@@ -127,16 +116,7 @@ final class DrawerItemsAdapter extends BaseAdapter{
                     }
                 )
             );
-//            holder.getButton.setOnClickListener(
-//                    (new AdapterView.OnItemClickListener()
-//                    {
-//                        @Override
-//                        public void onItemClick(AdapterView<?> arg0, View arg1,int position, long arg3)
-//                        {
-//                            Toast.makeText(arg0.getActivity(), "" + position, Toast.LENGTH_SHORT).show();
-//                        }
-//                    })
-//            );
+
             view.setTag(holder);
         } else {
             holder = (ViewHolder) view.getTag();
@@ -172,25 +152,6 @@ final class DrawerItemsAdapter extends BaseAdapter{
             holder.image.setImageAlpha(255);
             holder.getButton.setText("Estrai");
         }
-/*
-        String nome=crs.getString(crs.getColumnIndex(DBStrings.Cassetti_NOME));
-        String path=crs.getString(crs.getColumnIndex(DBStrings.Cassetti_ICONA_PATH));
-
-        TextView txt=(TextView) v.findViewById(R.id.txt_subject);
-        txt.setText(nome);
-
-        txt=(TextView) v.findViewById(R.id.txt_date);
-        txt.setText(path);
-
-        byte[] blob_img = crs.getBlob(crs.getColumnIndex(DBStrings.Cassetti_ICONA_BLOB));
-        if(blob_img!=null) {
-            Bitmap img = BitmapFactory.decodeByteArray(blob_img, 0, blob_img.length);
-            ImageView imgview = (ImageView) v.findViewById(R.id.img);
-            imgview.setImageBitmap(img);
-        }
-
-        ImageButton imgbtn=(ImageButton) v.findViewById(R.id.btn_delete);
-        imgbtn.setOnClickListener(clickListener);*/
 
         return view;
     }
@@ -202,7 +163,8 @@ final class DrawerItemsAdapter extends BaseAdapter{
 
     @Override
     public String getItem(int position) {
-        return urls.get(position);
+        return crs.getString(crs.getColumnIndex(DBStrings.Oggetti_ICONA_PATH));
+        //return urls.get(position);
     }
 
     @Override
@@ -217,6 +179,4 @@ final class DrawerItemsAdapter extends BaseAdapter{
         int numcassetto;
         int  objid;
     }
-
-
 }

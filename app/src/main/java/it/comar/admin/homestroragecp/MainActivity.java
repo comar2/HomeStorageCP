@@ -225,7 +225,7 @@ public class MainActivity
     @Override
     public void onDialogPositiveClick(DialogFragment dialog) {
         // User touched the dialog's positive button
-        System.out.println("pigiato ok");
+        //System.out.println("pigiato ok");
 
         int numcassetto = ((AggiungiOggettoDialog)dialog).getNumcassetto();
 
@@ -241,7 +241,7 @@ public class MainActivity
             original_path = getPath(getApplicationContext(), uriImg);
 
         }
-        System.out.println(original_path);
+        //System.out.println(original_path);
         File source = new File(original_path);
 
         DBManager db = new DBManager(this);
@@ -251,7 +251,7 @@ public class MainActivity
 
         String destinationPath = numcassetto < 10 ? "/storage/emulated/0/Android/data/it.comar.admin.homestroragecp/files/cassetti/c0" + numcassetto+"/"+incrementale+".jpg" : "/storage/emulated/0/Android/data/it.comar.admin.homestroragecp/files/cassetti/c" + numcassetto+"/"+incrementale+".jpg";
         File destination = new File(destinationPath);
-        System.out.println(destinationPath);
+        //System.out.println(destinationPath);
 
         byte[] b_img = new byte[1];
         b_img[0] = 1;
@@ -282,7 +282,7 @@ public class MainActivity
     @Override
     public void onDialogNegativeClick(DialogFragment dialog) {
         // User touched the dialog's negative button
-        System.out.println("pigiato cancel");
+        //System.out.println("pigiato cancel");
     }
 
     private static void copyFileUsingFileStreams(File source, File dest) throws IOException {
@@ -308,11 +308,10 @@ public class MainActivity
     /**
      * Get a file path from a Uri. This will get the the path for Storage Access
      * Framework Documents, as well as the _data field for the MediaStore and
-     * other file-based ContentProviders.
+     * other file-based ContentProviders. paulburke
      *
      * @param context The context.
      * @param uri The Uri to query.
-     * @author paulburke
      */
     public static String getPath(final Context context, final Uri uri) {
 
