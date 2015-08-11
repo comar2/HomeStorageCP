@@ -271,6 +271,7 @@ public class MainActivity
         if (salvataggio_riuscito) {
             db.save_oggetto(nome, destinationPath, true, b_img, numcassetto);
             Toast.makeText(getApplicationContext(), "oggetto salvato", Toast.LENGTH_SHORT).show();
+            dia.setAggiornaDb();
             dia.notifyDataSetChanged();
             //
         }

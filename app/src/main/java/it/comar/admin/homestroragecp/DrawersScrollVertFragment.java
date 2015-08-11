@@ -319,6 +319,7 @@ public class DrawersScrollVertFragment extends Fragment {
             // Inflate the layout for this fragment
             View view = inflater.inflate(R.layout.drawer_content_page, container, false);
             ListView drawerItems = (ListView) view.findViewById(R.id.listView1);
+
             Button bottone_vai_a_cassetto= (Button) view.findViewById(R.id.bottone_vai_a_cassetto);
             bottone_vai_a_cassetto.setOnClickListener(
                     new View.OnClickListener() {

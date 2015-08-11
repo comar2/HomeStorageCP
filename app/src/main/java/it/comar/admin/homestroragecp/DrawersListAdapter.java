@@ -24,6 +24,7 @@ final class DrawersListAdapter extends CursorAdapter {
     public DrawersListAdapter(Context context, Cursor c, int flags) {
         super(context,c,flags);
 
+        //la lista dei cassetti va recuperata solo una volta (suppongo che non ci si metta a mettere e togliere cassetti mentre la macchina è in funzione
         DBManager db = new DBManager(context);
         changeCursor(db.query_cassetto());
     }
@@ -37,8 +38,7 @@ final class DrawersListAdapter extends CursorAdapter {
 
         View view =  LayoutInflater.from(context).inflate(R.layout.sample_list_detail_item, parent, false);// inflater.inflate(layout, parent, false);
 
-        final ViewHolder holder;
-        holder = new ViewHolder();
+        final ViewHolder holder = new ViewHolder();
         holder.numcassetto = crs.getInt(crs.getColumnIndex(DBStrings.Cassetti_ID));
         holder.image = (ImageView) view.findViewById(R.id.photo);
         holder.text = (TextView) view.findViewById(R.id.url);

@@ -15,8 +15,6 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
-
 import it.comar.admin.homestroragecp.database.DBManager;
 import it.comar.admin.homestroragecp.database.DBStrings;
 import it.comar.admin.homestroragecp.database.DBUpdateAsyncTask;
@@ -26,11 +24,14 @@ import it.comar.arduino.service.AdkService;
 final class DrawerItemsAdapter extends BaseAdapter{
     private final Context context;
 
-    //private final ArrayList<String> urls;// = new ArrayList<String>();
+    //una pezza per ridurre il numero di accessi al db, mentre aspettiamo di implemetare in modo corretto il cursoradapter.
+    private boolean aggiornadb;
+
     private final int numcassetto;
 
     private DBManager db=null;
     private Cursor crs;
+
     public DrawerItemsAdapter(Context context, int pos) {
         this.context = context;
         numcassetto = pos;
@@ -38,13 +39,17 @@ final class DrawerItemsAdapter extends BaseAdapter{
         db=new DBManager(context);
         crs=db.query_oggetto(numcassetto);
 
-        //urls = new ArrayList<String>(CassettiUrl.getCassettoUrl3(pos, this.context));
     }
 
     @Override
     public View getView(final int position, View view, ViewGroup parent) {
         final ViewHolder holder;
-        crs=db.query_oggetto(numcassetto);
+
+        if (view == null||aggiornadb){
+            crs=db.query_oggetto(numcassetto);
+            aggiornadb=false;
+        }
+
         crs.moveToPosition(position);
         final int id = crs.getInt(crs.getColumnIndex(DBStrings.Oggetti_ID));
         //System.out.println("creazione vista");
@@ -62,7 +67,7 @@ final class DrawerItemsAdapter extends BaseAdapter{
 
 
             holder.getButton.setOnClickListener(
-                (new View.OnClickListener()
+                    (new View.OnClickListener()
                     {
                         @Override
                         public void onClick(View v)
@@ -114,7 +119,7 @@ final class DrawerItemsAdapter extends BaseAdapter{
                             //System.out.println("inviato intent");
                         }
                     }
-                )
+                    )
             );
 
             view.setTag(holder);
@@ -136,7 +141,7 @@ final class DrawerItemsAdapter extends BaseAdapter{
         // Trigger the download of the URL asynchronously into the image view.
         Picasso.with(context)
                 .load(url)
-                .placeholder(R.drawable.placeholder)
+                .placeholder(R.drawable.error/*placeholder*/)
                 .error(R.drawable.error)
                 .resizeDimen(R.dimen.list_detail_image_size, R.dimen.list_detail_image_size)
                 .centerInside()
@@ -178,5 +183,14 @@ final class DrawerItemsAdapter extends BaseAdapter{
         Button getButton;
         int numcassetto;
         int  objid;
+    }
+
+    public void setAggiornaDb(){aggiornadb = true;}
+
+    @Override
+    public void notifyDataSetChanged(){
+        if (getCount() ==0)//altrimenti quando la lista è vuota non aggiorna corettamente la lista.
+            crs=db.query_oggetto(numcassetto);
+        super.notifyDataSetChanged();
     }
 }
