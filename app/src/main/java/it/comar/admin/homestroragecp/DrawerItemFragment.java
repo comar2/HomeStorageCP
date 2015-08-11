@@ -80,7 +80,7 @@ public class DrawerItemFragment extends Fragment {
 
         ListView listView = (ListView) view.findViewById(R.id.listView);
 
-        DrawersListAdapter ladapt = new DrawersListAdapter(getActivity());
+        DrawersListAdapter ladapt = new DrawersListAdapter(getActivity(),null,0);
 
         listView.setAdapter(ladapt);
 

@@ -6,63 +6,64 @@ import android.database.Cursor;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 
+import android.widget.CursorAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
-
-
 import it.comar.admin.homestroragecp.database.DBManager;
 import it.comar.admin.homestroragecp.database.DBStrings;
 
-/*TODO se i dati vengono prelevati da un cursor ottenuto da un DB forse è meglio farlo ereditare da cursoradapter, piuttosto che da baseadapter e fare le modifiche del caso al codice*/
-final class DrawersListAdapter extends BaseAdapter  {
-    private final Context context;
+
+final class DrawersListAdapter extends CursorAdapter {
+    //private final Context context;
     //private final ArrayList<String> urls;// = new ArrayList<String>();
 
-    private DBManager db=null;
-    private Cursor crs;
+    public DrawersListAdapter(Context context, Cursor c, int flags) {
+        super(context,c,flags);
 
-    public DrawersListAdapter(Context context) {
-        this.context = context;
-        db=new DBManager(context);
-        crs=db.query_cassetto();
-        //urls = /*db.query_cassetto();*/new ArrayList<String>(ConfigArmadio.getDrawersNamesList(db));
-
+        DBManager db = new DBManager(context);
+        changeCursor(db.query_cassetto());
     }
 
+    //prepara la nuova view eseguito solo  se non c'è ancora una view pronta
+    //come riferimento:
+    // http://grepcode.com/file/repo1.maven.org/maven2/org.robolectric/android-all/4.4_r1-robolectric-1/android/widget/CursorAdapter.java#CursorAdapter.getView%28int%2Candroid.view.View%2Candroid.view.ViewGroup%29
     @Override
-    public View getView(int position, View view, ViewGroup parent) {
+    public View newView(Context context, Cursor cursor, ViewGroup parent) {
+        Cursor crs = getCursor();
 
-        crs=db.query_cassetto();
+        View view =  LayoutInflater.from(context).inflate(R.layout.sample_list_detail_item, parent, false);// inflater.inflate(layout, parent, false);
+
         final ViewHolder holder;
-        crs.moveToPosition(position);
+        holder = new ViewHolder();
+        holder.numcassetto = crs.getInt(crs.getColumnIndex(DBStrings.Cassetti_ID));
+        holder.image = (ImageView) view.findViewById(R.id.photo);
+        holder.text = (TextView) view.findViewById(R.id.url);
 
-        if (view == null) {
-            view = LayoutInflater.from(context).inflate(R.layout.sample_list_detail_item, parent, false);
+        view.setTag(holder);
 
-            holder = new ViewHolder();
-            holder.numcassetto = crs.getInt(crs.getColumnIndex(DBStrings.Cassetti_ID));
-            holder.image = (ImageView) view.findViewById(R.id.photo);
-            holder.text = (TextView) view.findViewById(R.id.url);
+        //FillHolder(context, crs, holder);
 
+        return view;
+    }
 
-            view.setTag(holder);
-        } else {
-            holder = (ViewHolder) view.getTag();
-        }
+    // collega i dati alla view
+    @Override
+    public void bindView(View view, Context context, Cursor crs) {
 
-        // Get the image URL for the current position.
-        //String url = getItem(position);
-        //System.out.println(position + " " + crs.getPosition());
+        final ViewHolder holder;
+        holder = (ViewHolder) view.getTag();
 
-        //System.out.println(crs.getPosition());
-        String url =  crs.getString(crs.getColumnIndex(DBStrings.Cassetti_ICONA_PATH)); //getItem(position);
-        //System.out.println("... " +url);
+        FillHolder(context, crs, holder);
+    }
+
+    private void FillHolder(Context context, Cursor crs, ViewHolder holder){
+
+        String url =  crs.getString(crs.getColumnIndex(DBStrings.Cassetti_ICONA_PATH));
+
         String nome = crs.getString(crs.getColumnIndex(DBStrings.Cassetti_NOME));
         holder.text.setText(nome);
 
@@ -70,29 +71,12 @@ final class DrawersListAdapter extends BaseAdapter  {
 
         Picasso.with(context)
                 .load(url)
-                .placeholder(R.drawable.placeholder)
+                .placeholder(R.drawable.error/*placeholder*/)
                 .error(R.drawable.error)
                 .resizeDimen(R.dimen.list_detail_image_size, R.dimen.list_detail_image_size)
                 .centerInside()
                 .tag(context)
                 .into(holder.image);
-
-        return view;
-    }
-
-    @Override
-    public int getCount() {
-        return crs.getCount();
-    }
-
-    @Override
-    public String getItem(int position) {
-        return crs.getString(crs.getColumnIndex(DBStrings.Cassetti_ICONA_PATH));
-    }
-
-    @Override
-    public long getItemId(int position) {
-        return position;
     }
 
     static class ViewHolder {
