@@ -31,30 +31,20 @@
                 <!-- Allows your application to be notified of an attached USB accessory -->
                 <action android:name="android.hardware.usb.action.USB_ACCESSORY_ATTACHED" />
 
-
-                <!-- per far comparire l'applicazione in elenchi tipo "share" della galleria -->
-                <action android:name="android.intent.action.SEND" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <!-- il tipo mime dei file che può ricevere l'applicazione. */* per ruscare su tutto  -->
-                <data android:mimeType="image/*" />
-
             </intent-filter>
 
             <!--
             External XML resources file declares identifying information about the accessory that
-			you want detect -->
+			you want detect
+            -->
             <meta-data
                 android:name="android.hardware.usb.action.USB_ACCESSORY_ATTACHED"
                 android:resource="@xml/accessory_filter" />
-
         </activity>
-
         <activity
             android:name=".Activity_ManualMov"
             android:label="@string/app_name"
             android:theme="@style/ThemeOverlay.AppCompat.ActionBar" >
-
         </activity>
 
         <service
@@ -62,6 +52,21 @@
             android:enabled="true"
             android:exported="false" >
         </service>
+
+        <activity
+            android:name=".share.LoadImageFromIntentActivity"
+            android:label="@string/title_activity_load_image_from_intent"
+            android:theme="@style/Theme.AppCompat.NoActionBar">
+            <intent-filter>
+                <!-- per far comparire l'applicazione in elenchi tipo "share" della galleria -->
+                <action android:name="android.intent.action.SEND" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <!-- il tipo mime dei file che può ricevere l'applicazione. */* per ruscare su tutto -->
+                <data android:mimeType="image/*" />
+            </intent-filter>
+        </activity>
+
     </application>
 
 </manifest>
