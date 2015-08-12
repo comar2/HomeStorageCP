@@ -30,6 +30,15 @@
 
                 <!-- Allows your application to be notified of an attached USB accessory -->
                 <action android:name="android.hardware.usb.action.USB_ACCESSORY_ATTACHED" />
+
+
+                <!-- per far comparire l'applicazione in elenchi tipo "share" della galleria -->
+                <action android:name="android.intent.action.SEND" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <!-- il tipo mime dei file che può ricevere l'applicazione. */* per ruscare su tutto  -->
+                <data android:mimeType="image/*" />
+
             </intent-filter>
 
             <!--
