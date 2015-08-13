@@ -18,6 +18,45 @@ final class CassettiUrl {
     static protected final String folderPrefix = "c";
     static protected final String urlPrefix = "file://";
 
+    public static void createFolders(int numero_cassetti, Context appcontext){
+
+        String mainfldPath; //main folder path
+        String drawerPath;
+
+
+        File fexd = appcontext.getExternalFilesDir(mainfolderName);
+
+        if (!fexd.exists()){
+            fexd.mkdirs();
+        }
+        else if (fexd.isFile()){
+            fexd.delete();
+            fexd.mkdirs();
+        }
+
+        mainfldPath =  new String(fexd.getAbsolutePath());
+        System.out.println(mainfldPath);
+
+        for (int i=1;i<=numero_cassetti;i++){
+            drawerPath = mainfldPath + File.separator + folderPrefix + String.format("%02d",i);
+            System.out.println(drawerPath);
+            fexd = new File(drawerPath);
+
+            if (!fexd.exists()){
+                fexd.mkdirs();
+            }
+            else if (fexd.isFile()){
+                fexd.delete();
+                fexd.mkdirs();
+            }
+
+            if (!fexd.isDirectory())
+            {
+                fexd.mkdirs();
+            }
+        }
+    }
+
     public static String[] getCassettoUrlNew(int cass, Context appcontext){
         final String mainfldPath; //main folder path
         final String drawerPath;

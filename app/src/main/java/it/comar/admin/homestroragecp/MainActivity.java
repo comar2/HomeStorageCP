@@ -26,6 +26,8 @@ import it.comar.admin.homestroragecp.utility.FileManip;
 import it.comar.admin.homestroragecp.utility.UriToPath;
 import it.comar.arduino.service.AdkService;
 
+import static it.comar.admin.homestroragecp.CassettiUrl.createFolders;
+
 /**
  * Attivita principale della applicazione.
  */
@@ -123,10 +125,12 @@ public class MainActivity
         //intent.putExtra(AdkServiceOld.GENERIC_MSG, "index.html");
         startService(intent);
 
+        createFolders(19,getApplicationContext());
+
         //se non ci sono cassetti li creo
         DBManager db = new DBManager(this);
-
-        if (db.query_cassetto().getCount() == 0){
+        int numero_cassetti = db.query_cassetto().getCount();
+        if (numero_cassetti == 0){
 
             for (int i = 1; i <= 19; i++) {
                 String nome_record = "Cassetto " + i;
