@@ -135,7 +135,7 @@ public class LoadImageFromIntentActivity extends Activity implements View.OnClic
             String destinationPath = cassettoselez < 10 ? "/storage/emulated/0/Android/data/it.comar.admin.homestroragecp/files/cassetti/c0" + cassettoselez +"/"+incrementale+".jpg" : "/storage/emulated/0/Android/data/it.comar.admin.homestroragecp/files/cassetti/c" + cassettoselez +"/"+incrementale+".jpg";
             File destination = new File(destinationPath);
             File source = new File(path);
-            
+
             byte[] b_img = new byte[1];
             b_img[0] = 1;
 

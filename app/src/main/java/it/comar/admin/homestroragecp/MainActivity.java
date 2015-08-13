@@ -18,12 +18,8 @@ import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 
 import it.comar.admin.homestroragecp.database.DBManager;
 import it.comar.admin.homestroragecp.utility.FileManip;
@@ -36,8 +32,8 @@ import it.comar.arduino.service.AdkService;
 public class MainActivity
         extends FragmentActivity
         implements DrawersScrollVertFragment.OnFragmentInteractionListener,
-        DrawerItemFragment.OnDrawerItemFragmentInteractionListener,
-        AggiungiOggettoDialog.AggiungiOggettoListener
+        DrawerItemFragment.OnDrawerItemFragmentInteractionListener/*,
+        AggiungiOggettoDialog.AggiungiOggettoListener*/
 {
 
     private FrameLayout leftFragment;
@@ -210,73 +206,7 @@ public class MainActivity
         dia = drawerItemsAdapter;
     }
 
-//TODO ATTENZIONE NON SALVA IL BLOB
-    // The dialog fragment receives a reference to this Activity through the
-    // Fragment.onAttach() callback, which it uses to call the following methods
-    // defined by the NoticeDialogFragment.NoticeDialogListener interface
-    @Override
-    public void onDialogPositiveClick(DialogFragment dialog) {
-        // User touched the dialog's positive button
-        //System.out.println("pigiato ok");
 
-        int numcassetto = ((AggiungiOggettoDialog)dialog).getNumcassetto();
-
-        String nome = ((AggiungiOggettoDialog)dialog).getNome();
-
-        if(nome.equals("")){nome = "Oggetto";}
-
-        Uri uriImg = ((AggiungiOggettoDialog)dialog).getUriImmagine();
-
-        String original_path="";
-        if (uriImg!=null) {
-
-            original_path = UriToPath.getPath(getApplicationContext(), uriImg);
-
-        }
-        //System.out.println(original_path);
-        File source = new File(original_path);
-
-        DBManager db = new DBManager(this);
-
-        int incrementale = db.query_max_id_oggetto();
-        incrementale++;
-
-        String destinationPath = numcassetto < 10 ? "/storage/emulated/0/Android/data/it.comar.admin.homestroragecp/files/cassetti/c0" + numcassetto+"/"+incrementale+".jpg" : "/storage/emulated/0/Android/data/it.comar.admin.homestroragecp/files/cassetti/c" + numcassetto+"/"+incrementale+".jpg";
-        File destination = new File(destinationPath);
-        //System.out.println(destinationPath);
-
-        byte[] b_img = new byte[1];
-        b_img[0] = 1;
-
-        boolean salvataggio_riuscito = true;
-        if (uriImg!=null) {
-            try {
-                FileManip.copyFileUsingFileStreams(source, destination);
-            }
-            catch (FileNotFoundException e){
-                salvataggio_riuscito = false;
-            }catch (IOException e) {
-                e.printStackTrace();
-                salvataggio_riuscito = false;
-            }
-        }
-        if (salvataggio_riuscito) {
-            db.save_oggetto(nome, destinationPath, true, b_img, numcassetto);
-            Toast.makeText(getApplicationContext(), "oggetto salvato", Toast.LENGTH_SHORT).show();
-            dia.setAggiornaDb();
-            dia.notifyDataSetChanged();
-            //
-        }
-        else{
-            Toast.makeText(getApplicationContext(), "oggetto non salvato", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    @Override
-    public void onDialogNegativeClick(DialogFragment dialog) {
-        // User touched the dialog's negative button
-        //System.out.println("pigiato cancel");
-    }
 
 
 

@@ -22,13 +22,19 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.widget.Toast;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 import fr.castorflex.android.verticalviewpager.VerticalViewPager;
 import it.comar.admin.homestroragecp.database.DBManager;
+import it.comar.admin.homestroragecp.utility.FileManip;
+import it.comar.admin.homestroragecp.utility.UriToPath;
 import it.comar.arduino.service.AdkService;
 
 
@@ -41,6 +47,8 @@ import it.comar.arduino.service.AdkService;
  * create an instance of this fragment.
  */
 public class DrawersScrollVertFragment extends Fragment {
+
+    private static final int REQUEST_CODE_IMMAGINE_OGGETTO = 1;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -254,7 +262,7 @@ public class DrawersScrollVertFragment extends Fragment {
      * Simple Fragment used to display some meaningful content for each page in the sample's
      * {@link android.support.v4.view.ViewPager}.
      */
-    public static class Drawer_ContentFragment extends Fragment {
+    public static class Drawer_ContentFragment extends Fragment  implements AggiungiOggettoDialog.AggiungiOggettoListener{
 
         private static final String KEY_TITLE = "title";
         private static final String KEY_INDICATOR_COLOR = "indicator_color";
@@ -299,6 +307,8 @@ public class DrawersScrollVertFragment extends Fragment {
 
         }
 
+        private DrawerItemsAdapter dia;
+        private int cassetto_in_uso;
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
@@ -315,6 +325,7 @@ public class DrawersScrollVertFragment extends Fragment {
             }
 
             final int posCassetto=drawerPos;
+            cassetto_in_uso=posCassetto;
 
             // Inflate the layout for this fragment
             View view = inflater.inflate(R.layout.drawer_content_page, container, false);
@@ -345,6 +356,7 @@ public class DrawersScrollVertFragment extends Fragment {
             //ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, CassettiUrl.getCassettoUrl(drawerPos,this.getActivity()));
             //DrawersListAdapter ladapt = new DrawersListAdapter(getActivity());
             final DrawerItemsAdapter ladapt = new DrawerItemsAdapter(getActivity(), drawerPos);
+            dia = ladapt;
 
             drawerItems.setAdapter(ladapt);
 
@@ -354,9 +366,16 @@ public class DrawersScrollVertFragment extends Fragment {
                     (new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
+                            Intent intent = new Intent();
+                            intent.setType("image/*");
+                            intent.setAction(Intent.ACTION_GET_CONTENT);
+                            startActivityForResult(Intent.createChooser(intent, "Select picture"), REQUEST_CODE_IMMAGINE_OGGETTO);
+                            System.out.println("intent ricerca immagine avviato");
+                            /*
                             DialogFragment dialog = AggiungiOggettoDialog.newInstance(posCassetto);
                             dialog.show(getActivity().getSupportFragmentManager(), "AggiungiOggettoDialog");
                             ((MainActivity) getActivity()).setDrawerItemsAdapter(ladapt);
+                            */
                         }
                     }
                     )
@@ -387,6 +406,94 @@ public class DrawersScrollVertFragment extends Fragment {
                 dividerColorView.setTextColor(dividerColor);
             }
         }
+
+        //TODO ATTENZIONE NON SALVA IL BLOB
+        // The dialog fragment receives a reference to this Activity through the
+        // Fragment.onAttach() callback, which it uses to call the following methods
+        // defined by the NoticeDialogFragment.NoticeDialogListener interface
+        @Override
+        public void onDialogPositiveClick(DialogFragment dialog) {
+            // User touched the dialog's positive button
+            //System.out.println("pigiato ok");
+
+            int numcassetto = ((AggiungiOggettoDialog)dialog).getNumcassetto();
+
+            String nome = ((AggiungiOggettoDialog)dialog).getNome();
+
+            if(nome.equals("")){nome = "Oggetto";}
+
+            Uri uriImg = ((AggiungiOggettoDialog)dialog).getUriImmagine();
+
+            String original_path="";
+            if (uriImg!=null) {
+
+                original_path = UriToPath.getPath(getActivity().getApplicationContext(), uriImg);
+
+            }
+            //System.out.println(original_path);
+            File source = new File(original_path);
+
+            DBManager db = new DBManager(getActivity().getApplicationContext());
+
+            int incrementale = db.query_max_id_oggetto();
+            incrementale++;
+
+            String destinationPath = numcassetto < 10 ? "/storage/emulated/0/Android/data/it.comar.admin.homestroragecp/files/cassetti/c0" + numcassetto+"/"+incrementale+".jpg" : "/storage/emulated/0/Android/data/it.comar.admin.homestroragecp/files/cassetti/c" + numcassetto+"/"+incrementale+".jpg";
+            File destination = new File(destinationPath);
+            //System.out.println(destinationPath);
+
+            byte[] b_img = new byte[1];
+            b_img[0] = 1;
+
+            boolean salvataggio_riuscito = true;
+            if (uriImg!=null) {
+                try {
+                    FileManip.copyFileUsingFileStreams(source, destination);
+                }
+                catch (FileNotFoundException e){
+                    salvataggio_riuscito = false;
+                }catch (IOException e) {
+                    e.printStackTrace();
+                    salvataggio_riuscito = false;
+                }
+            }
+            if (salvataggio_riuscito) {
+                db.save_oggetto(nome, destinationPath, true, b_img, numcassetto);
+                Toast.makeText(getActivity().getApplicationContext(), "oggetto salvato", Toast.LENGTH_SHORT).show();
+                dia.setAggiornaDb();
+                dia.notifyDataSetChanged();
+                //
+            }
+            else{
+                Toast.makeText(getActivity().getApplicationContext(), "oggetto non salvato", Toast.LENGTH_SHORT).show();
+            }
+        }
+
+        @Override
+        public void onDialogNegativeClick(DialogFragment dialog) {
+            // User touched the dialog's negative button
+            //System.out.println("pigiato cancel");
+        }
+
+        @Override
+        public void onActivityResult(int requestCode, int resultCode, Intent data) {
+            // Check which request we're responding to
+            if (requestCode == REQUEST_CODE_IMMAGINE_OGGETTO) {
+                // Make sure the request was successful
+                if (resultCode == Activity.RESULT_OK) {
+                    // The user picked a photo
+                    // The Intent's data Uri identifies which contact was selected.
+                    AggiungiOggettoDialog dialog = AggiungiOggettoDialog.newInstance(cassetto_in_uso);
+                    dialog.setAoListener(this);
+                    dialog.setUriImmagine(data.getData());
+                    dialog.show(getActivity().getSupportFragmentManager(), "AggiungiOggettoDialog");
+                    ((MainActivity) getActivity()).setDrawerItemsAdapter(dia);
+
+
+                }
+            }
+        }
+
     }
 
     /**

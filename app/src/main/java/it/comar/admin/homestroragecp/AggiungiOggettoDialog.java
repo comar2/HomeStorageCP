@@ -4,26 +4,27 @@ package it.comar.admin.homestroragecp;
  * Created by Fabrizio on 06/08/2015.
  */
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 
+import com.squareup.picasso.Picasso;
+
+import it.comar.admin.homestroragecp.utility.UriToPath;
 
 
 public class AggiungiOggettoDialog extends DialogFragment {
 
     private View view;
-    private static final int REQUEST_CODE = 1;
 
     private Uri uriimmagine;
 
@@ -97,9 +98,24 @@ public class AggiungiOggettoDialog extends DialogFragment {
         // Create the AlertDialog object and return it
         AlertDialog AD = builder.create();
 
-        Button bottone_scelta_immagine =(Button) view.findViewById(R.id.btn_scelta_immagine);
+        ImageView immagine_oggetto =(ImageView) view.findViewById(R.id.oggetto_scelto_img);
 
-        bottone_scelta_immagine.setOnClickListener(
+        Context context = getActivity().getApplicationContext();
+
+        String path = UriToPath.getPath(context, uriimmagine); //parseUriToFilename
+
+        if (path != null) {
+            Picasso.with(context)
+                    .load("file://" + path)
+                    .placeholder(R.drawable.error/*placeholder*/)
+                    .error(R.drawable.error)
+                    .resizeDimen(R.dimen.list_detail_image_size, R.dimen.list_detail_image_size)
+                    .centerInside()
+                    .tag(context)
+                    .into(immagine_oggetto);
+        }
+
+        /*bottone_scelta_immagine.setOnClickListener(
                 (new View.OnClickListener()
                 {
                     @Override
@@ -113,9 +129,13 @@ public class AggiungiOggettoDialog extends DialogFragment {
                     }
                 }
                 )
-        );
+        );*/
 
         return AD;
+    }
+
+    public void setUriImmagine(Uri uriimg){
+        uriimmagine=uriimg;
     }
 
     /* The activity that creates an instance of this dialog fragment must
@@ -128,7 +148,17 @@ public class AggiungiOggettoDialog extends DialogFragment {
 
     // Use this instance of the interface to deliver action events
     AggiungiOggettoListener aoListener;
-
+    public void setAoListener(Object listener){
+        try {
+            // Instantiate the AggiungiOggettoListener so we can send events to the host
+            aoListener = (AggiungiOggettoListener) listener;
+        } catch (ClassCastException e) {
+            // The activity doesn't implement the interface, throw exception
+            throw new ClassCastException(listener.toString()
+                    + " must implement AggiungiOggettoListener");
+        }
+    }
+    /*
     // Override the Fragment.onAttach() method to instantiate the AggiungiOggettoListener
     @Override
     public void onAttach(Activity activity) {
@@ -142,9 +172,9 @@ public class AggiungiOggettoDialog extends DialogFragment {
             throw new ClassCastException(activity.toString()
                     + " must implement AggiungiOggettoListener");
         }
-    }
+    }*/
 
-    @Override
+   /* @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         // Check which request we're responding to
         if (requestCode == REQUEST_CODE) {
@@ -157,5 +187,5 @@ public class AggiungiOggettoDialog extends DialogFragment {
                 System.out.print(uriimmagine.toString());
             }
         }
-    }
+    }*/
 }
