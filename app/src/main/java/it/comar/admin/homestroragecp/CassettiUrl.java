@@ -18,11 +18,19 @@ final class CassettiUrl {
     static protected final String folderPrefix = "c";
     static protected final String urlPrefix = "file://";
 
-    public static void createFolders(int numero_cassetti, Context appcontext){
+    /**
+     * Crea le cartelle dei cassetti nel path pubblico della applicazione.
+     *
+     * @param numero_cassetti il numero di cassetti presenti nella macchina fisica
+     * @param appcontext il contesto della applicazione.
+     * @return La lista contenente l'elenco dei path dei cassetti.
+     */
+    public static ArrayList<String> createFolders(int numero_cassetti, Context appcontext){
 
         String mainfldPath; //main folder path
         String drawerPath;
-
+        ArrayList<String> paths_list =new ArrayList<String>() {
+        };
 
         File fexd = appcontext.getExternalFilesDir(mainfolderName);
 
@@ -35,26 +43,31 @@ final class CassettiUrl {
         }
 
         mainfldPath =  new String(fexd.getAbsolutePath());
-        System.out.println(mainfldPath);
+        //System.out.println(mainfldPath);
 
         for (int i=1;i<=numero_cassetti;i++){
             drawerPath = mainfldPath + File.separator + folderPrefix + String.format("%02d",i);
-            System.out.println(drawerPath);
+            //System.out.println(drawerPath);
+
+            paths_list.add(drawerPath);
+
             fexd = new File(drawerPath);
 
             if (!fexd.exists()){
-                fexd.mkdirs();
+                fexd.mkdirs();//System.out.println("non esiste");
             }
             else if (fexd.isFile()){
                 fexd.delete();
-                fexd.mkdirs();
+                fexd.mkdirs();//System.out.println("un file");
             }
 
             if (!fexd.isDirectory())
             {
-                fexd.mkdirs();
+                fexd.mkdirs();//System.out.println("non cartella");
             }
         }
+
+        return paths_list;
     }
 
     public static String[] getCassettoUrlNew(int cass, Context appcontext){

@@ -2,6 +2,7 @@ package it.comar.admin.homestroragecp;
 
 import android.app.Activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -13,6 +14,7 @@ import android.widget.ListView;
 
 import android.widget.Toast;
 
+import it.comar.arduino.service.AdkService;
 
 
 /**
@@ -95,6 +97,26 @@ public class DrawerItemFragment extends Fragment {
                     mListener.OnDrawerItemFragmentInteraction(position);
                 }
 
+            }
+        });
+
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener(){
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                Toast.makeText(getActivity(),"click lungo " + "id: " +id  + "; position: " + Integer.toString(position), Toast.LENGTH_SHORT).show();
+
+                if (mListener != null) {
+                    mListener.OnDrawerItemFragmentInteraction(position);
+                    //ora devo richiamare il cassetto
+                    String command = AdkService.SEND_MSG_CHIAMA_CASSETTO;
+                    String params = Integer.toString(position);
+                    Intent intent = new Intent(AdkService.SEND_ADK_STRING);
+                    intent.putExtra(AdkService.MSG_COMMAND, command);
+                    intent.putExtra(AdkService.MSG_PARAMS, params);
+                    getActivity().getApplicationContext().sendBroadcast(intent);
+                }
+
+                return true;//la funzione di callback deve ritornare vero se ha consumato il click lungo, falso altrimenti.
             }
         });
 
