@@ -62,8 +62,8 @@
                 <Button
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/vai_a_cassetto"
-                    android:id="@+id/bottone_vai_a_cassetto"
+                    android:text="@string/aggiorna_immagine_cassetto"
+                    android:id="@+id/bottone_immagine_cassetto"
                     android:layout_gravity="right"
                     />
 

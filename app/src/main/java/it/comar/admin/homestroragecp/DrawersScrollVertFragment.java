@@ -49,6 +49,7 @@ import it.comar.arduino.service.AdkService;
 public class DrawersScrollVertFragment extends Fragment {
 
     private static final int REQUEST_CODE_IMMAGINE_OGGETTO = 1;
+    private static final int REQUEST_CODE_IMMAGINE_CASSETTO = 2;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -109,37 +110,6 @@ public class DrawersScrollVertFragment extends Fragment {
             index++;
         }
 
-//        mTabs.add(new SamplePagerItem(
-//                "PAG 1",//getString(R.string.tab_stream), // Title
-//                Color.BLUE, // Indicator color
-//                Color.GRAY // Divider color
-//        ));
-//
-//        mTabs.add(new SamplePagerItem(
-//                "PAG 2",//getString(R.string.tab_messages), // Title
-//                Color.RED, // Indicator color
-//                Color.GRAY // Divider color
-//        ));
-//
-//        mTabs.add(new SamplePagerItem(
-//                "PAG 3",//getString(R.string.tab_photos), // Title
-//                Color.YELLOW, // Indicator color
-//                Color.GRAY // Divider color
-//        ));
-//
-//        mTabs.add(new SamplePagerItem(
-//                "PAG 4",//getString(R.string.tab_notifications), // Title
-//                Color.GREEN, // Indicator color
-//                Color.GRAY // Divider color
-//        ));
-//
-//        mTabs.add(new SamplePagerItem(
-//                "PAG 5",//getString(R.string.tab_notifications), // Title
-//                Color.LTGRAY, // Indicator color
-//                Color.BLUE // Divider color
-//        ));
-//        // END_INCLUDE (populate_tabs)
-
     }
 
     @Override
@@ -167,7 +137,8 @@ public class DrawersScrollVertFragment extends Fragment {
     }
 
     // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
+    //TODO e lui
+    public void onButtonPressed(Uri uri) {System.out.println("on button " + uri.toString());
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
         }
@@ -208,6 +179,7 @@ public class DrawersScrollVertFragment extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
+
         void onFragmentInteraction(Uri uri);
     }
 
@@ -271,6 +243,7 @@ public class DrawersScrollVertFragment extends Fragment {
 
         private Context context;
 
+        private OnDrawer_ContentFragmentInteractionListener Drawer_ContentListener;
         /**
          * @return a new instance of {@link Drawer_ContentFragment}, adding the parameters into a bundle and
          * setting them as arguments.
@@ -307,7 +280,29 @@ public class DrawersScrollVertFragment extends Fragment {
 
         }
 
+        public interface OnDrawer_ContentFragmentInteractionListener {
+            // TODO: Update argument type and name
+
+            void On_cambio_immagine_Drawer_ContentFragmentInteraction(int cassetto);
+        }
+        @Override
+        public void onAttach(Activity activity) {
+            super.onAttach(activity);
+            try {
+                Drawer_ContentListener = (OnDrawer_ContentFragmentInteractionListener) activity;
+            } catch (ClassCastException e) {
+                throw new ClassCastException(activity.toString()
+                        + " OnDrawer_ContentFragmentInteractionListener");
+            }
+        }
+        @Override
+        public void onDetach() {
+            super.onDetach();
+            Drawer_ContentListener = null;
+        }
+
         private DrawerItemsAdapter dia;
+
         private int cassetto_in_uso;
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -331,22 +326,28 @@ public class DrawersScrollVertFragment extends Fragment {
             View view = inflater.inflate(R.layout.drawer_content_page, container, false);
             ListView drawerItems = (ListView) view.findViewById(R.id.listView1);
 
-            Button bottone_vai_a_cassetto= (Button) view.findViewById(R.id.bottone_vai_a_cassetto);
-            bottone_vai_a_cassetto.setOnClickListener(
+            Button bottone_immagine_cassetto= (Button) view.findViewById(R.id.bottone_immagine_cassetto);
+            bottone_immagine_cassetto.setOnClickListener(
                     new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
 
+                            Intent intent = new Intent();
+                            intent.setType("image/*");
+                            intent.setAction(Intent.ACTION_GET_CONTENT);
+                            startActivityForResult(Intent.createChooser(intent, "Select picture"), REQUEST_CODE_IMMAGINE_CASSETTO);
+                            System.out.println("intent ricerca immagine avviato");
+
                             //System.out.println("preparo l'intent");
                             //System.out.println("posCassetto = " + posCassetto);
-
+/*
                             String command = AdkService.SEND_MSG_CHIAMA_CASSETTO;
                             String params = Integer.toString(posCassetto-1); //La macchina indicizza con base  0, io chiamo i cassetti con base 1
                             Intent intent = new Intent(AdkService.SEND_ADK_STRING);
                             intent.putExtra(AdkService.MSG_COMMAND, command);
                             intent.putExtra(AdkService.MSG_PARAMS, params);
                             context.sendBroadcast(intent);
-
+*/
                             //System.out.println("inviato intent");
                         }
                     }
@@ -488,6 +489,71 @@ public class DrawersScrollVertFragment extends Fragment {
                     dialog.setUriImmagine(data.getData());
                     dialog.show(getActivity().getSupportFragmentManager(), "AggiungiOggettoDialog");
                     ((MainActivity) getActivity()).setDrawerItemsAdapter(dia);
+
+
+                }
+            }
+
+            if(requestCode == REQUEST_CODE_IMMAGINE_CASSETTO) {
+                // Make sure the request was successful
+                if (resultCode == Activity.RESULT_OK) {
+
+
+                    int numcassetto = cassetto_in_uso;
+
+                    //String nome = ((AggiungiOggettoDialog)dialog).getNome();
+
+                    //if(nome.equals("")){nome = "Oggetto";}
+
+                    Uri uriImg = data.getData();
+
+                    String original_path = "";
+                    if (uriImg != null) {
+
+                        original_path = UriToPath.getPath(getActivity().getApplicationContext(), uriImg);
+
+                    }
+                    //System.out.println(original_path);
+                    File source = new File(original_path);
+
+                    DBManager db = new DBManager(getActivity().getApplicationContext());
+
+                    //int incrementale = db.query_max_id_oggetto();
+                    //incrementale++;
+
+                    String destinationPath = "/storage/emulated/0/Android/data/it.comar.admin.homestroragecp/files/cassetti/img/" + numcassetto + ".jpg";
+                    File destination = new File(destinationPath);
+                    System.out.println(destinationPath);
+
+                    byte[] b_img = new byte[1];
+                    b_img[0] = 1;
+
+                    boolean salvataggio_riuscito = true;
+                    if (uriImg != null) {
+                        try {
+                            FileManip.copyFileUsingFileStreams(source, destination);
+                        } catch (FileNotFoundException e) {
+                            salvataggio_riuscito = false;
+                            System.out.println("file not found");
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                            salvataggio_riuscito = false;
+                        }
+                    }
+                    if (salvataggio_riuscito) {
+                        db.update_cassetto(numcassetto, destinationPath);
+                        //db.save_oggetto(nome, destinationPath, true, b_img, numcassetto);
+                        Toast.makeText(getActivity().getApplicationContext(), "oggetto salvato", Toast.LENGTH_SHORT).show();
+
+                        if (Drawer_ContentListener != null) {
+                            Drawer_ContentListener.On_cambio_immagine_Drawer_ContentFragmentInteraction(cassetto_in_uso);
+                        }
+                        //dia.setAggiornaDb();
+                        //dia.notifyDataSetChanged();
+                        //
+                    } else {
+                        Toast.makeText(getActivity().getApplicationContext(), "oggetto non salvato", Toast.LENGTH_SHORT).show();
+                    }
 
 
                 }

@@ -16,7 +16,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <string name="menu_main_man_mov">movimenti manuali</string>
-    <string name="vai_a_cassetto">Vai a cassetto</string>
+    <string name="aggiorna_immagine_cassetto">Img cassetto</string>
     <string name="aggiungi_oggetto_a_cassetto">Aggiungi oggetto</string>
     <string name="title_activity_load_image_from_intent">LoadImageFromIntentActivity</string>
     <string name="cassetto_corrente">Cassetto corrente</string>

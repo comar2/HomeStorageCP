@@ -134,6 +134,22 @@ public class DBManager {
         }
     }
 
+    public void update_cassetto(int id, String path){
+
+        SQLiteDatabase db=dboh.getWritableDatabase();
+
+        ContentValues cv = new ContentValues();
+        cv.put(DBStrings.Cassetti_ICONA_PATH, path);
+        try
+        {
+            int i = db.update(DBStrings.TBL_Cassetti, cv, DBStrings.Cassetti_ID + " = ?", new String[]{Integer.toString(id)} );
+        }
+        catch (SQLiteException sqle)
+        {
+            // Gestione delle eccezioni
+        }
+    }
+
     public void update_oggetto(int id, Boolean presente){
 
         SQLiteDatabase db=dboh.getWritableDatabase();

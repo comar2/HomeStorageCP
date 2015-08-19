@@ -67,6 +67,25 @@ final class CassettiUrl {
             }
         }
 
+        //infine faccio la cartella per contenere le immagini dei cassetti
+        drawerPath = mainfldPath + File.separator + "img";
+
+        fexd = new File(drawerPath);
+
+        if (!fexd.exists()){
+            fexd.mkdirs();//System.out.println("non esiste");
+        }
+        else if (fexd.isFile()){
+            fexd.delete();
+            fexd.mkdirs();//System.out.println("un file");
+        }
+
+        if (!fexd.isDirectory())
+        {
+            fexd.mkdirs();//System.out.println("non cartella");
+        }
+
+
         return paths_list;
     }
 

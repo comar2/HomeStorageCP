@@ -27,6 +27,7 @@ import it.comar.arduino.service.AdkService;
  */
 public class DrawerItemFragment extends Fragment {
 
+    private DrawersListAdapter ladapt;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -82,7 +83,7 @@ public class DrawerItemFragment extends Fragment {
 
         ListView listView = (ListView) view.findViewById(R.id.listView);
 
-        DrawersListAdapter ladapt = new DrawersListAdapter(getActivity(),null,0);
+        ladapt = new DrawersListAdapter(getActivity(),null,0);
 
         listView.setAdapter(ladapt);
 
@@ -160,6 +161,11 @@ public class DrawerItemFragment extends Fragment {
     public interface OnDrawerItemFragmentInteractionListener {
         // TODO: Update argument type and name
         void OnDrawerItemFragmentInteraction(int position);
+    }
+
+
+    public void Aggiorna_Immagini_Cassetti(int cassetto){
+        ladapt.nuovo_cursore(cassetto, getActivity());//notifyDataSetChanged();
     }
 
 }

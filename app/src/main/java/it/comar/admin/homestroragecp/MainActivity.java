@@ -35,7 +35,8 @@ import static it.comar.admin.homestroragecp.CassettiUrl.createFolders;
 public class MainActivity
         extends FragmentActivity
         implements DrawersScrollVertFragment.OnFragmentInteractionListener,
-        DrawerItemFragment.OnDrawerItemFragmentInteractionListener/*,
+        DrawerItemFragment.OnDrawerItemFragmentInteractionListener,
+        DrawersScrollVertFragment.Drawer_ContentFragment.OnDrawer_ContentFragmentInteractionListener/*,
         AggiungiOggettoDialog.AggiungiOggettoListener*/
 {
 
@@ -44,8 +45,19 @@ public class MainActivity
     private DrawerItemsAdapter dia;
 
     //TODO FARE metodo
-    public void onFragmentInteraction(Uri uri){
+    public void onFragmentInteraction(Uri uri){//////////////////////TODOe lui
 
+    }
+
+    /**
+     * metodo per fare aggiornare l'immagine del cassetto quando viene scelta una nuova immagine.
+     * @param cassetto il numero del cassetto la cui immagine è cambiata
+     */
+    public void On_cambio_immagine_Drawer_ContentFragmentInteraction(int cassetto){
+        DrawerItemFragment dif = (DrawerItemFragment)
+                getSupportFragmentManager().findFragmentById(R.id.fragmentLeft);
+
+        dif.Aggiorna_Immagini_Cassetti(cassetto);
     }
     public void OnDrawerItemFragmentInteraction(int pos) {
         // The user selected the headline of an article from the HeadlinesFragment
@@ -110,14 +122,18 @@ public class MainActivity
         if (savedInstanceState == null) {//se si e alla prima eseczione di onCreate
 
             // Crea una istanza di DrawerItemFragment e la aggiunge nel container R.id.fragmentLeft
-            fragmentTransaction.add(R.id.fragmentLeft, DrawerItemFragment.newInstance("DrawerItemFragment", "bbbb"));
+            DrawerItemFragment dif =DrawerItemFragment.newInstance("DrawerItemFragment", "bbbb");
+            fragmentTransaction.add(R.id.fragmentLeft, dif);
             fragmentTransaction.commit();
 
             fragmentTransaction = fragmentManager.beginTransaction();
 
             // Crea una istanza di DrawerScrollVertFragment e la aggiunge nel container R.id.fragmentRight
-            fragmentTransaction.add(R.id.fragmentRight, DrawersScrollVertFragment.newInstance("DrawersScrollVertFragment", "bb"));
+            DrawersScrollVertFragment dsvf = DrawersScrollVertFragment.newInstance("DrawersScrollVertFragment", "bb");
+            fragmentTransaction.add(R.id.fragmentRight, dsvf);
             fragmentTransaction.commit();
+
+
         }
 
         //avvio il servizio per controllare arduino
