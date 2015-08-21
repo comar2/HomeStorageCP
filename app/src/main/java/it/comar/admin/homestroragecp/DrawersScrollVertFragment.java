@@ -14,8 +14,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import android.widget.Button;
+import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import  android.support.v7.widget.LinearLayoutManager;
 
 
 import android.support.v4.app.Fragment;
@@ -324,7 +327,7 @@ public class DrawersScrollVertFragment extends Fragment {
 
             // Inflate the layout for this fragment
             View view = inflater.inflate(R.layout.drawer_content_page, container, false);
-            ListView drawerItems = (ListView) view.findViewById(R.id.listView1);
+            GridView drawerItems = (GridView) view.findViewById(R.id.gridView1);
 
             Button bottone_immagine_cassetto= (Button) view.findViewById(R.id.bottone_immagine_cassetto);
             bottone_immagine_cassetto.setOnClickListener(
